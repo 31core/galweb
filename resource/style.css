@@ -1,0 +1,21 @@
+.dialog
+{
+	background-color: white;
+	position: fixed;
+	left: 10%;
+	bottom: 10%;
+	width: 80%;
+	height: 30%;
+	border-style: solid;
+	border-color: #66cbea;
+	border-radius: 5px;
+	opacity: 70%;
+}
+
+.dialog-text
+{
+	position: relative;
+	left: 5%;
+	top: 20%;
+	font-size: medium;
+}
