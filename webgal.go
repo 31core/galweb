@@ -3,14 +3,27 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
 func HttpAPI(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		fmt.Fprint(w, "Method Error")
+		return
+	}
 	path := strings.Split(r.URL.Path, "/")
-	if path[len(path)-1] == "get_platform" {
-		fmt.Fprintf(w, "Linux")
+	/* Save game data */
+	if path[len(path)-1] == "save" {
+		err := ioutil.WriteFile(r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
+		if err != nil {
+			fmt.Fprint(w, "ERROR")
+			log.Printf("Failed while writing '%s'.", r.PostFormValue("name"))
+		} else {
+			fmt.Fprint(w, "OK")
+		}
 	}
 }
 
