@@ -10,13 +10,14 @@ import (
 )
 
 func HttpAPI(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		fmt.Fprint(w, "Method Error")
-		return
-	}
 	path := strings.Split(r.URL.Path, "/")
+	command := path[len(path)-1]
 	/* Save game data */
-	if path[len(path)-1] == "save" {
+	if command == "save" {
+		if r.Method != "POST" {
+			fmt.Fprint(w, "Method Error")
+			return
+		}
 		err := ioutil.WriteFile(r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
 		if err != nil {
 			fmt.Fprint(w, "ERROR")
@@ -24,13 +25,26 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 		} else {
 			fmt.Fprint(w, "OK")
 		}
+		return
 	}
+	if command == "load" {
+		data, err := ioutil.ReadFile(r.URL.Query().Get("name"))
+		if err != nil {
+			fmt.Fprint(w, "ERROR")
+			log.Printf("Failed while reading '%s'.", r.URL.Query().Get("name"))
+		} else {
+			fmt.Fprint(w, string(data))
+		}
+		return
+	}
+	fmt.Fprintf(w, "ERROR: unkown api '%s'", command)
+	log.Printf("ERROR: unkown api '%s'", command)
 }
 
 func HttpGame(w http.ResponseWriter, r *http.Request) {
 	scene := r.URL.Query().Get("scene")
-	_html, _ := ioutil.ReadFile("game.html")
-	_game_data, _ := ioutil.ReadFile(fmt.Sprintf("%s.gws", scene))
+	_html, _ := ioutil.ReadFile("resource/game.html")
+	_game_data, _ := ioutil.ReadFile(fmt.Sprintf("scripts/%s.gws", scene))
 	/* 替换game_data */
 	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\"", "\\\"")) // " -> \"
 	game_data_list := strings.Split(string(_game_data), "\n")
@@ -64,9 +78,17 @@ func HttpResource(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", http.DetectContentType(data))
 }
 
+func HttpData(w http.ResponseWriter, r *http.Request) {
+	path := strings.Split(r.URL.Path, "/")
+	data, _ := ioutil.ReadFile(fmt.Sprintf("data/%s", path[len(path)-1]))
+	fmt.Fprint(w, string(data))
+	w.Header().Set("Content-Type", http.DetectContentType(data))
+}
+
 func main() {
 	http.HandleFunc("/game", HttpGame)
 	http.HandleFunc("/api/", HttpAPI)
 	http.HandleFunc("/resource/", HttpResource)
+	http.HandleFunc("/data/", HttpData)
 	http.ListenAndServe(":5000", nil)
 }
