@@ -113,6 +113,7 @@ func HttpIcon(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	LoadConfig()
+	DefaultConfig()
 
 	http.HandleFunc("/", HttpIndex)
 	http.HandleFunc("/game", HttpGame)

@@ -1,3 +1,5 @@
+var speed = Number.parseInt(get_config("text-speed"));
+
 /* 设置对话框 */
 function dialog(character, saying) {
 	document.getElementById("character").innerHTML = character;
@@ -22,7 +24,7 @@ function execute(code) {
 			setTimeout(() => {
 				dialog(character, saying.slice(0, len + 1));
 				len++;
-			}, 100 * i);
+			}, speed * i);
 		}
 	}
 	/* 切换到新的场景 */
