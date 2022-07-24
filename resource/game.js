@@ -34,7 +34,7 @@ function execute(code) {
 	}
 	/* 替换背景 */
 	else if(instructions[0] == "background") {
-		document.getElementsByTagName("body")[0].style.background = "url('data/" + instructions[1] + "')";
+		document.getElementById("background").src = "data/" + instructions[1];
 	}
 	else if(instructions[0] == "play-sound") {
 		music = new Audio("data/" + instructions[1]);

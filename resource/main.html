@@ -24,6 +24,7 @@
 		}
 	</style>
 	<body>
+		<img id="background" height="100%" width="100%">
 		<div id="container">
 			<p id="group">
 				<a>Continue</a>
@@ -36,7 +37,7 @@
 	</body>
 	<script>
 		document.getElementsByTagName("title")[0].innerHTML = get_config("title");
-		document.getElementsByTagName("body")[0].style.background = "url('data/" + get_config("background") + "')";
+		document.getElementById("background").src = "data/" + get_config("background");
 
 		var music_url = get_config("background-music");
 		if(music_url != "") {
