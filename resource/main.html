@@ -37,5 +37,12 @@
 	<script>
 		document.getElementsByTagName("title")[0].innerHTML = get_config("title");
 		document.getElementsByTagName("body")[0].style.background = "url('data/" + get_config("background") + "')";
+
+		var music_url = get_config("background-music");
+		if(music_url != "") {
+			music = new Audio("data/" + music_url);
+			music.loop = true;
+			music.play();
+		}
 	</script>
 </html>

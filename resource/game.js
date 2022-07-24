@@ -1,4 +1,5 @@
 var speed = Number.parseInt(get_config("text-speed"));
+var music
 
 /* 设置对话框 */
 function dialog(character, saying) {
@@ -34,6 +35,14 @@ function execute(code) {
 	/* 替换背景 */
 	else if(instructions[0] == "background") {
 		document.getElementsByTagName("body")[0].style.background = "url('data/" + instructions[1] + "')";
+	}
+	else if(instructions[0] == "play-sound") {
+		music = new Audio("data/" + instructions[1]);
+		music.loop = true;
+		music.play();
+	}
+	else if(instructions[0] == "stop-sound") {
+		music.pause();
 	}
 }
 
