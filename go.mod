@@ -1,3 +1,3 @@
-module webgal
+module galweb
 
 go 1.18

@@ -9,6 +9,14 @@ import (
 	"strings"
 )
 
+func HttpIndex(w http.ResponseWriter, r *http.Request) {
+	data, _ := ioutil.ReadFile("resource/main.html")
+	html := string(data)
+	html = strings.ReplaceAll(html, "{title}", config["title"])
+	html = strings.ReplaceAll(html, "{background}", config["background"])
+	fmt.Fprint(w, string(html))
+}
+
 func HttpAPI(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.URL.Path, "/")
 	command := path[len(path)-1]
@@ -91,12 +99,25 @@ func HttpData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", http.DetectContentType(data))
 }
 
+func HttpIcon(w http.ResponseWriter, r *http.Request) {
+	data, err := ioutil.ReadFile("data/" + config["icon"])
+	if err != nil {
+		log.Printf("No such icon: %s\n", config["icon"])
+		w.WriteHeader(404)
+		return
+	}
+	w.Header().Set("Content-Type", http.DetectContentType(data))
+	fmt.Fprint(w, string(data))
+}
+
 func main() {
 	LoadConfig()
 
+	http.HandleFunc("/", HttpIndex)
 	http.HandleFunc("/game", HttpGame)
 	http.HandleFunc("/api/", HttpAPI)
 	http.HandleFunc("/resource/", HttpResource)
 	http.HandleFunc("/data/", HttpData)
+	http.HandleFunc("/favicon.ico", HttpIcon)
 	http.ListenAndServe(":5000", nil)
 }
