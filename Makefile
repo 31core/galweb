@@ -1,6 +1,6 @@
 all:
-	go build -o webgal *.go
+	go build -o galweb *.go
 
 run:
 	make all
-	./webgal
+	./galweb

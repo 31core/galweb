@@ -34,3 +34,7 @@ function execute(code) {
 		document.getElementById("body").style.background = "url('data/" + instructions[1] + "')";
 	}
 }
+
+function get_code_type(code) {
+	return code.split(" ")[0];
+}

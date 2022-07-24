@@ -43,6 +43,11 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 
 func HttpGame(w http.ResponseWriter, r *http.Request) {
 	scene := r.URL.Query().Get("scene")
+	/* 重定向到entry */
+	if scene == "" {
+		w.Header().Set("Location", "/game?scene="+config["entry"])
+		w.WriteHeader(302)
+	}
 	_html, _ := ioutil.ReadFile("resource/game.html")
 	_game_data, _ := ioutil.ReadFile(fmt.Sprintf("scripts/%s.gws", scene))
 	/* 替换game_data */
@@ -68,6 +73,7 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 		"x"
 	] */
 	html := strings.ReplaceAll(string(_html), "{game_data}", game_data)
+	html = strings.ReplaceAll(html, "{title}", config["title"])
 	fmt.Fprint(w, html)
 }
 
@@ -86,6 +92,8 @@ func HttpData(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	LoadConfig()
+
 	http.HandleFunc("/game", HttpGame)
 	http.HandleFunc("/api/", HttpAPI)
 	http.HandleFunc("/resource/", HttpResource)
