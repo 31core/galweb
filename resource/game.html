@@ -1,25 +1,23 @@
 <html>
 	<head>
 		<link href="/resource/style.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="/resource/info.js"></script>
 		<script type="text/javascript" src="/resource/game.js"></script>
 		<script type="text/javascript" src="/resource/api.js"></script>
 		<script type="text/javascript" src="/resource/events.js"></script>
-		<title>{title}</title>
+		<title></title>
 	</head>
 	<script>
-		console.log(`WebGal 0.01
-Powered by 31core
-https://31core.pythonanywhere.com
-https://gitlab.com/31core/galweb`);
 		var game_data = {game_data};
 	</script>
-	<body id="body" onclick="on_click();" style="background-size:150%;">
+	<body onclick="on_click();" style="background-size:150%;">
 		<div class="dialog">
 			<p id="character"></p>
 			<a class="dialog-text" id="dialog-text"></a>
 		</div>
 		<script>
 			on_click();
+			document.getElementsByTagName("title")[0].innerHTML = get_config("title");
 		</script>
 	</body>
 </html>

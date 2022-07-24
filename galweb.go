@@ -12,8 +12,6 @@ import (
 func HttpIndex(w http.ResponseWriter, r *http.Request) {
 	data, _ := ioutil.ReadFile("resource/main.html")
 	html := string(data)
-	html = strings.ReplaceAll(html, "{title}", config["title"])
-	html = strings.ReplaceAll(html, "{background}", config["background"])
 	fmt.Fprint(w, string(html))
 }
 
@@ -28,7 +26,7 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 		}
 		err := ioutil.WriteFile(r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
 		if err != nil {
-			fmt.Fprint(w, "ERROR")
+			fmt.Fprintf(w, "Failed while writing '%s'.", r.PostFormValue("name"))
 			log.Printf("Failed while writing '%s'.", r.PostFormValue("name"))
 		} else {
 			fmt.Fprint(w, "OK")
@@ -38,11 +36,15 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 	if command == "load" {
 		data, err := ioutil.ReadFile(r.URL.Query().Get("name"))
 		if err != nil {
-			fmt.Fprint(w, "ERROR")
+			fmt.Fprintf(w, "Failed while reading '%s'.", r.URL.Query().Get("name"))
 			log.Printf("Failed while reading '%s'.", r.URL.Query().Get("name"))
 		} else {
 			fmt.Fprint(w, string(data))
 		}
+		return
+	}
+	if command == "get_config" {
+		fmt.Fprint(w, config[r.URL.Query().Get("key")])
 		return
 	}
 	fmt.Fprintf(w, "ERROR: unkown api '%s'", command)
@@ -81,7 +83,6 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 		"x"
 	] */
 	html := strings.ReplaceAll(string(_html), "{game_data}", game_data)
-	html = strings.ReplaceAll(html, "{title}", config["title"])
 	fmt.Fprint(w, html)
 }
 

@@ -1,6 +1,8 @@
 <html>
 	<head>
-		<title>{title}</title>
+		<title></title>
+		<script type="text/javascript" src="/resource/info.js"></script>
+		<script type="text/javascript" src="/resource/api.js"></script>
 	</head>
 	<style>
 		#container
@@ -21,7 +23,7 @@
 			left: 10%;
 		}
 	</style>
-	<body style="background: url('data/{background}');">
+	<body>
 		<div id="container">
 			<p id="group">
 				<a>Continue</a>
@@ -32,4 +34,8 @@
 			</p>
 		</div>
 	</body>
+	<script>
+		document.getElementsByTagName("title")[0].innerHTML = get_config("title");
+		document.getElementsByTagName("body")[0].style.background = "url('data/" + get_config("background") + "')";
+	</script>
 </html>

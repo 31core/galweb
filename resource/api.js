@@ -16,3 +16,11 @@ function load(name) {
 	req.send();
 	return req.responseText;
 }
+
+/* 获取配置信息 */
+function get_config(key) {
+	var req = new XMLHttpRequest();
+	req.open("GET", "/api/get_config?key=" + key, false);
+	req.send();
+	return req.responseText;
+}
