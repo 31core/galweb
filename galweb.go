@@ -100,6 +100,11 @@ func HttpData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", http.DetectContentType(data))
 }
 
+func HttpSave(w http.ResponseWriter, r *http.Request) {
+	data, _ := ioutil.ReadFile("resource/save.html")
+	fmt.Fprint(w, string(data))
+}
+
 func HttpIcon(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadFile("data/" + config["icon"])
 	if err != nil {
@@ -120,6 +125,7 @@ func main() {
 	http.HandleFunc("/api/", HttpAPI)
 	http.HandleFunc("/resource/", HttpResource)
 	http.HandleFunc("/data/", HttpData)
+	http.HandleFunc("/save", HttpSave)
 	http.HandleFunc("/favicon.ico", HttpIcon)
 	http.ListenAndServe(":5000", nil)
 }

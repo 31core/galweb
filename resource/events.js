@@ -8,3 +8,9 @@ function on_click() {
 		step++;
 	}
 }
+
+function on_keydown() {
+	if(window.event.keyCode == 32) {
+		on_click();
+	}
+}

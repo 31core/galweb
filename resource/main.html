@@ -23,15 +23,20 @@
 			left: 10%;
 		}
 	</style>
+	<script>
+		function start() {
+			location.assign("/game")
+		}
+	</script>
 	<body>
 		<img id="background" height="100%" width="100%">
 		<div id="container">
 			<p id="group">
-				<a>Continue</a>
+				<button>Continue</button>
 				<br>
-				<a href="/game">Start</a>
+				<button onclick="start();">Start</button>
 				<br>
-				<a>Load</a>
+				<button>Load</button>
 			</p>
 		</div>
 	</body>

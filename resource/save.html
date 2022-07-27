@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<script type="text/javascript" src="/resource/info.js"></script>
+		<script type="text/javascript" src="/resource/api.js"></script>
+		<script type="text/javascript" src="/resource/runtime.js"></script>
+	</head>
+	<style>
+	</style>
+	<script>
+		function on_save(num) {
+			dict = {
+				"step": get_url_arg("step"),
+				"scene": get_url_arg("scene")
+			};
+			save(num.toString(), JSON.stringify(dict));
+		}
+		function return_to_game() {
+			location.assign("/game" + location.search)
+		}
+	</script>
+	<body>
+		<button onclick="on_save(1);">1</button>
+		<button onclick="on_save(2);">2</button>
+		<br>
+		<button onclick="on_save(3);">3</button>
+		<button onclick="on_save(4);">4</button>
+		<br>
+		<button onclick="on_save(5);">5</button>
+		<button onclick="on_save(6);">6</button>
+		<button onclick="return_to_game();">Return</button>
+	</body>
+</html>
