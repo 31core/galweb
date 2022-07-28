@@ -30,8 +30,10 @@
 				step = Number.parseInt(get_url_arg("step"));
 			}
 			if(get_url_arg("background") != undefined) {
-				current_background = get_url_arg("background");
-				set_background(current_background);
+				set_background(get_url_arg("background"));
+			}
+			if(get_url_arg("music") != undefined) {
+				play_sound(get_url_arg("music"));
 			}
 			function to_save_page() {
 				location.assign("/save?" + encode_url_arg({"step": step.toString(),

@@ -1,6 +1,7 @@
 var speed = Number.parseInt(get_config("text-speed"));
 var music;
 var current_background = "";
+var current_music = "";
 
 var timers = [];
 
@@ -41,12 +42,10 @@ function execute(code) {
 		set_background(instructions[1]);
 	}
 	else if(instructions[0] == "play-sound") {
-		music = new Audio("/data/" + instructions[1]);
-		music.loop = true;
-		music.play();
+		play_sound(instructions[1])
 	}
 	else if(instructions[0] == "stop-sound") {
-		music.pause();
+		stop_sound();
 	}
 }
 
@@ -61,4 +60,16 @@ function set_title(title) {
 function set_background(filename) {
 	current_background = filename;
 	document.getElementById("background").src = "/data/" + filename;
+}
+
+function play_sound(filename) {
+	current_music = filename;
+	music = new Audio("/data/" + filename);
+	music.loop = true;
+	music.play();
+}
+
+function stop_sound() {
+	current_music = "";
+	music.pause();
 }

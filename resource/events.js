@@ -19,6 +19,10 @@ function on_click() {
 		timers = [];
 		return;
 	}
+	save("autosave", JSON.stringify({"step": step.toString(), 
+		"scene": get_url_arg("scene"), 
+		"background": current_background,
+		"music": current_music}));
 	execute(game_data[step]);
 	step++;
 	if(get_code_type(game_data[step - 1]) != "say") {

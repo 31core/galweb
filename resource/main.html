@@ -5,6 +5,7 @@
 		<script type="text/javascript" src="/resource/info.js"></script>
 		<script type="text/javascript" src="/resource/api.js"></script>
 		<script type="text/javascript" src="/resource/game.js"></script>
+		<script type="text/javascript" src="/resource/runtime.js"></script>
 	</head>
 	<style>
 		#container
@@ -26,10 +27,14 @@
 		}
 	</style>
 	<script>
-		function start() {
+		function Continue() {
+			var dict = JSON.parse(load("autosave"));
+			location.assign("/game?" + encode_url_arg(dict));
+		}
+		function Start() {
 			location.assign("/game");
 		}
-		function load() {
+		function Load() {
 			location.assign("/load");
 		}
 	</script>
@@ -37,11 +42,11 @@
 		<img id="background" height="100%" width="100%">
 		<div id="container">
 			<p id="group">
-				<button width="100px">Continue</button>
+				<button onclick="Continue();">Continue</button>
 				<br><br>
-				<button onclick="start();">Start</button>
+				<button onclick="Start();">Start</button>
 				<br><br>
-				<button onclick="load();">Load</button>
+				<button onclick="Load();">Load</button>
 			</p>
 		</div>
 	</body>

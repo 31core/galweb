@@ -1,7 +1,13 @@
 {
-	"background": "Main page background",
-	"entry": "Script name(without extension) to start",
+	"background": "",
+	"entry": "",
 	"title": "",
 	"icon": "",
-	"background-music": "Main page BGM"
+	"background-music": "",
+
+	"#" :{
+		"#background": "Main page background",
+		"#entry": "Script name(without extension) to start",
+		"#background-music": "Main page BGM"
+	}
 }
