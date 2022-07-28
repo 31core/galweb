@@ -24,7 +24,7 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, "Method Error")
 			return
 		}
-		err := ioutil.WriteFile(r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
+		err := ioutil.WriteFile("./saves/"+r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
 		if err != nil {
 			fmt.Fprintf(w, "Failed while writing '%s'.", r.PostFormValue("name"))
 			log.Printf("Failed while writing '%s'.", r.PostFormValue("name"))
@@ -33,8 +33,9 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	/* Load game data */
 	if command == "load" {
-		data, err := ioutil.ReadFile(r.URL.Query().Get("name"))
+		data, err := ioutil.ReadFile("./saves/" + r.URL.Query().Get("name"))
 		if err != nil {
 			fmt.Fprintf(w, "Failed while reading '%s'.", r.URL.Query().Get("name"))
 			log.Printf("Failed while reading '%s'.", r.URL.Query().Get("name"))

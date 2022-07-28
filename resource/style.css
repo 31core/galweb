@@ -28,3 +28,16 @@
 	font-size: 150%;
 	left: 5%;
 }
+
+button
+{
+	background-color: #66cbea;
+	border: solid;
+	border-color: #40a7b9;
+	border-radius: 8px;
+	padding: 5px 10px;
+}
+button:hover
+{
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}

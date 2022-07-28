@@ -1,5 +1,7 @@
 var speed = Number.parseInt(get_config("text-speed"));
-var music
+var music;
+
+var timers = [];
 
 /* 设置对话框 */
 function dialog(character, saying) {
@@ -9,7 +11,7 @@ function dialog(character, saying) {
 
 /* 执行script代码 */
 function execute(code) {
-	instructions = code.split(" ")
+	var instructions = code.split(" ");
 	/* 设置对话框 */
 	if(instructions[0] == "say") {
 		var len = 0;
@@ -22,10 +24,11 @@ function execute(code) {
 			character = instructions[2];
 		}
 		for(var i = 0; i < saying.length; i++) {
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
+				timers = timers.slice(1);
 				dialog(character, saying.slice(0, len + 1));
 				len++;
-			}, speed * i);
+			}, speed * i));
 		}
 	}
 	/* 切换到新的场景 */

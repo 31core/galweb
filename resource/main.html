@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title></title>
+		<link href="/resource/style.css" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="/resource/info.js"></script>
 		<script type="text/javascript" src="/resource/api.js"></script>
 	</head>
@@ -32,17 +33,17 @@
 		<img id="background" height="100%" width="100%">
 		<div id="container">
 			<p id="group">
-				<button>Continue</button>
-				<br>
+				<button width="100px">Continue</button>
+				<br><br>
 				<button onclick="start();">Start</button>
-				<br>
+				<br><br>
 				<button>Load</button>
 			</p>
 		</div>
 	</body>
 	<script>
 		document.getElementsByTagName("title")[0].innerHTML = get_config("title");
-		document.getElementById("background").src = "data/" + get_config("background");
+		document.getElementById("background").src = "/data/" + get_config("background");
 
 		var music_url = get_config("background-music");
 		if(music_url != "") {
