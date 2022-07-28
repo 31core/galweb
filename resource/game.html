@@ -8,30 +8,42 @@
 		<script type="text/javascript" src="/resource/events.js"></script>
 		<title></title>
 	</head>
-	<script>
-		var game_data = {game_data};
-		if(get_url_arg("step") != undefined) {
-			step = Number.parseInt(get_url_arg("step"));
-		}
-		function to_save_page() {
-			location.assign("/save?step=" + step.toString() + "&scene=" + get_url_arg("scene"));
-		}
-	</script>
 	<body onclick="on_click();" onkeydown="on_keydown();">
 		<img id="background" height="100%" width="100%">
 		<div class="dialog">
 			<p id="character"></p>
 			<a class="dialog-text" id="dialog-text"></a>
 			<button style="position: absolute;
+				right: 15%;
+				bottom: 2%;" onclick="location.assign('/');">Home</button>
+			<button style="position: absolute;
 				right: 10%;
 				bottom: 2%;" onclick="to_save_page();">Save</button>
 			<button style="position: absolute;
-				right: 15%;
-				bottom: 2%;" onclick="location.assign('/');">Home</button>
+				right: 5%;
+				bottom: 2%;" onclick="to_load_page();">Load</button>
 		</div>
 		<script>
+			var game_data = {game_data};
+			/* 恢复状态 */
+			if(get_url_arg("step") != undefined) {
+				step = Number.parseInt(get_url_arg("step"));
+			}
+			if(get_url_arg("background") != undefined) {
+				current_background = get_url_arg("background");
+				set_background(current_background);
+			}
+			function to_save_page() {
+				location.assign("/save?" + encode_url_arg({"step": step.toString(),
+					"scene": get_url_arg("scene"),
+					"background": current_background}));
+			}
+			function to_load_page() {
+				location.assign("/load?" + encode_url_arg({"step": step.toString(),
+					"scene": get_url_arg("scene")}));
+			}
 			on_click();
-			document.getElementsByTagName("title")[0].innerHTML = get_config("title");
+			set_title(get_config("title"));
 		</script>
 	</body>
 </html>

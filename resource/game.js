@@ -1,5 +1,6 @@
 var speed = Number.parseInt(get_config("text-speed"));
 var music;
+var current_background = "";
 
 var timers = [];
 
@@ -37,10 +38,10 @@ function execute(code) {
 	}
 	/* 替换背景 */
 	else if(instructions[0] == "background") {
-		document.getElementById("background").src = "data/" + instructions[1];
+		set_background(instructions[1]);
 	}
 	else if(instructions[0] == "play-sound") {
-		music = new Audio("data/" + instructions[1]);
+		music = new Audio("/data/" + instructions[1]);
 		music.loop = true;
 		music.play();
 	}
@@ -51,4 +52,13 @@ function execute(code) {
 
 function get_code_type(code) {
 	return code.split(" ")[0];
+}
+/* Set title */
+function set_title(title) {
+	document.getElementsByTagName("title")[0].innerHTML = get_config("title");
+}
+/* Set background image */
+function set_background(filename) {
+	current_background = filename;
+	document.getElementById("background").src = "/data/" + filename;
 }
