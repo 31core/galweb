@@ -4,6 +4,7 @@ var current_background = "";
 var current_music = "";
 
 var timers = [];
+var figures = [];
 
 /* 设置对话框 */
 function dialog(character, saying) {
@@ -46,6 +47,32 @@ function execute(code) {
 	}
 	else if(instructions[0] == "stop-sound") {
 		stop_sound();
+	}
+	/* 添加人物立绘 */
+	else if(instructions[0] == "figure") {
+		var figures_div = document.getElementById("figures");
+		var figure = document.createElement("img");
+		figures.push(figure);
+
+		figure.setAttribute("src", "/data/" + instructions[1]);
+
+		if(figures.length > 3) {
+			console.log("Warning: It's not a goot idea to add more than 3 figures.");
+		}
+
+		for(var i = 0; i < figures.length; i++) {
+			figures[i].setAttribute("style", `position: absolute;
+				top: 10%;
+				left: ` + ((100 / figures.length) * i + 10).toString() + `%;
+				height: 80%;`);
+		}
+		figures_div.appendChild(figure);
+	}
+	else if(instructions[0] == "clean-figure") {
+		for(var i = 0; i < figures.length; i++) {
+			figures[i].remove();
+		}
+		figures = [];
 	}
 }
 
