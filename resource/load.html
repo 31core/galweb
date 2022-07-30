@@ -28,7 +28,7 @@
 			location.assign("/game?" + encode_url_arg(dict));
 		}
 		function return_to_game() {
-			location.assign("/game" + location.search)
+			location.assign(get_url_arg("origin") + location.search)
 		}
 	</script>
 	<body>

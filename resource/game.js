@@ -40,7 +40,29 @@ function execute(code) {
 	}
 	/* 替换背景 */
 	else if(instructions[0] == "background") {
-		set_background(instructions[1]);
+		var opacity = 10;
+		var background = document.getElementById("background");
+		var time = 0;
+		for(; time < 10; time++) {
+			setTimeout(() => {
+				background.setAttribute("style", "opacity: " + (10 * opacity).toString() + "%;");
+				opacity--;
+			},
+			time * 10);
+		}
+		time++;
+		setTimeout(() => {
+			set_background(instructions[1]);
+		},
+		time * 10);
+		time++
+		for(; time < 23; time++) {
+			setTimeout(() => {
+				background.setAttribute("style", "opacity: " + (10 * opacity).toString() + "%;");
+				opacity++;
+			},
+			time * 10);
+		}
 	}
 	else if(instructions[0] == "play-sound") {
 		play_sound(instructions[1])

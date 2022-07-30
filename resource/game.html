@@ -37,13 +37,15 @@
 				play_sound(get_url_arg("music"));
 			}
 			function to_save_page() {
-				location.assign("/save?" + encode_url_arg({"step": step.toString(),
+				location.assign("/save?" + encode_url_arg({"step": (step - 1).toString(),
 					"scene": get_url_arg("scene"),
 					"background": current_background}));
 			}
 			function to_load_page() {
-				location.assign("/load?" + encode_url_arg({"step": step.toString(),
-					"scene": get_url_arg("scene")}));
+				location.assign("/load?" + encode_url_arg({"step": (step - 1).toString(),
+					"scene": get_url_arg("scene"),
+					"background": current_background,
+					"origin": location.pathname}));
 			}
 			on_click();
 			set_title(get_config("title"));
