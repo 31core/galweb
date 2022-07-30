@@ -2,6 +2,7 @@ var speed = Number.parseInt(get_config("text-speed"));
 var music;
 var current_background = "";
 var current_music = "";
+var events_disabled = false;
 
 var timers = [];
 var figures = [];
@@ -95,6 +96,26 @@ function execute(code) {
 			figures[i].remove();
 		}
 		figures = [];
+	}
+	else if(instructions[0] == "choice") {
+		events_disabled = true;
+		var branch = {};
+		var choice = [];
+		document.getElementById("branch").removeAttribute("hidden");
+		for(var i = 1; i < instructions.length; i++) {
+			choice.push(document.createElement("a"));
+			choice[i - 1].innerHTML = instructions[i].split(":")[0];
+
+			choice[i - 1].setAttribute("class", "button");
+			choice[i - 1].setAttribute("href", "/game?scene=" + instructions[i].split(":")[1]);
+			choice[i - 1].setAttribute("style", `text-decoration:none;
+				position:absolute;
+				left: 5%;
+				top: ` + (20 * i).toString() + `%;
+				width: 85%`);
+
+			document.getElementById("branch").appendChild(choice[i - 1]);
+		}
 	}
 }
 

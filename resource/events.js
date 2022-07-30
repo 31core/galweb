@@ -1,6 +1,9 @@
 var step = 0;
 
 function on_click() {
+	if(events_disabled) {
+		return;
+	}
 	/* 如果文字还没显示完全则显全 */
 	if(timers.length != 0) {
 		var saying = game_data[step - 1].split(" ")[1];
@@ -25,12 +28,16 @@ function on_click() {
 		"music": current_music}));
 	execute(game_data[step]);
 	step++;
-	if(get_code_type(game_data[step - 1]) != "say") {
+	if(get_code_type(game_data[step - 1]) != "say" &&
+		get_code_type(game_data[step - 1]) != "choice") {
 		on_click();
 	}
 }
 
 function on_keydown() {
+	if(events_disabled) {
+		return;
+	}
 	if(window.event.keyCode == 13 ||
 		window.event.keyCode == 32) {
 		on_click();

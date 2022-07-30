@@ -11,16 +11,22 @@
 	<body>
 		<img onclick="on_click();" onkeydown="on_keydown();" id="background" height="100%" width="100%">
 		<div onclick="on_click();" onkeydown="on_keydown();" id="figures"></div>
+		<!-- 分支选择对话框 -->
+		<div id="branch" hidden="hidden" class="dialog" style="position: absolute;
+			top: 20%;
+			left: 15%;
+			width: 70%;"></div>
+		<!-- 对话框 -->
 		<div class="dialog">
 			<p id="character"></p>
 			<a class="dialog-text" id="dialog-text"></a>
-			<button style="position: absolute;
+			<button class="button" style="position: absolute;
 				right: 15%;
 				bottom: 2%;" onclick="location.assign('/');">Home</button>
-			<button style="position: absolute;
+			<button class="button" style="position: absolute;
 				right: 10%;
 				bottom: 2%;" onclick="to_save_page();">Save</button>
-			<button style="position: absolute;
+			<button class="button" style="position: absolute;
 				right: 5%;
 				bottom: 2%;" onclick="to_load_page();">Load</button>
 		</div>
