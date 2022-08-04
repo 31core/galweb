@@ -36,21 +36,20 @@
 			if(get_url_arg("step") != undefined) {
 				step = Number.parseInt(get_url_arg("step"));
 			}
-			if(get_url_arg("background") != undefined) {
-				set_background(get_url_arg("background"));
+			fastward();
+			if(current_background != "") {
+				set_background(current_background);
 			}
-			if(get_url_arg("music") != undefined) {
-				play_sound(get_url_arg("music"));
+			if(current_music != "") {
+				play_sound(current_music);
 			}
 			function to_save_page() {
 				location.assign("/save?" + encode_url_arg({"step": (step - 1).toString(),
-					"scene": get_url_arg("scene"),
-					"background": current_background}));
+					"scene": get_url_arg("scene")}));
 			}
 			function to_load_page() {
 				location.assign("/load?" + encode_url_arg({"step": (step - 1).toString(),
 					"scene": get_url_arg("scene"),
-					"background": current_background,
 					"origin": location.pathname}));
 			}
 			on_click();

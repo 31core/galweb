@@ -1,5 +1,8 @@
 all:
-	go build -o galweb *.go
+	go build
+
+release:
+	go build -ldflags "-s -w"
 
 run:
 	make all

@@ -49,7 +49,7 @@ function execute(code) {
 				background.setAttribute("style", "opacity: " + (10 * opacity).toString() + "%;");
 				opacity--;
 			},
-			time * 10);
+			time * 15);
 		}
 		time++;
 		setTimeout(() => {
@@ -62,7 +62,7 @@ function execute(code) {
 				background.setAttribute("style", "opacity: " + (10 * opacity).toString() + "%;");
 				opacity++;
 			},
-			time * 10);
+			time * 15);
 		}
 	}
 	else if(instructions[0] == "play-sound") {
@@ -118,10 +118,15 @@ function execute(code) {
 		}
 	}
 }
-
+/* 获取代码类型 */
 function get_code_type(code) {
 	return code.split(" ")[0];
 }
+/* 获取代码参数 */
+function get_code_arg(code, num) {
+	return code.split(" ")[num + 1];
+}
+
 /* Set title */
 function set_title(title) {
 	document.getElementsByTagName("title")[0].innerHTML = get_config("title");
@@ -142,4 +147,16 @@ function play_sound(filename) {
 function stop_sound() {
 	current_music = "";
 	music.pause();
+}
+
+/* 通过step获取现在的状态 */
+function fastward() {
+	for(var i = 0; i < step; i++) {
+		if(get_code_type(game_data[i]) == "background") {
+			current_background = get_code_arg(game_data[i], 0);
+		}
+		else if(get_code_type(game_data[i]) == "play-sound") {
+			current_music = get_code_arg(game_data[i], 0);
+		}
+	}
 }
