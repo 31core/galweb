@@ -7,6 +7,26 @@ var events_disabled = false;
 var timers = [];
 var figures = [];
 
+function script_parse(str) {
+	str = str.replaceAll(/ +/g, " ");
+	str = str.replaceAll("\\n", "<br>");
+
+	var lis = [];
+	var last = 0;
+	for(var i = 1; i < str.length; i++) {
+		if(str[i] == " " && str[i - 1] != "\\") {
+			lis.push(str.slice(last, i));
+			last = i + 1;
+		}
+	}
+	lis.push(str.slice(last, str.length));
+
+	for(var i = 0; i < lis.length; i++) {
+		lis[i] = lis[i].replaceAll("\\ ", " ");
+	}
+	return lis;
+}
+
 /* 设置对话框 */
 function dialog(character, saying) {
 	document.getElementById("character").innerHTML = character;
@@ -15,11 +35,11 @@ function dialog(character, saying) {
 
 /* 执行script代码 */
 function execute(code) {
-	var instructions = code.split(" ");
+	var instructions = script_parse(code);
 	/* 设置对话框 */
 	if(instructions[0] == "say") {
 		var len = 0;
-		var saying = code.split(" ")[1];
+		var saying = get_code_arg(code, 0);
 		var character;
 		if(instructions.length == 2) {
 			character = "";
@@ -120,11 +140,11 @@ function execute(code) {
 }
 /* 获取代码类型 */
 function get_code_type(code) {
-	return code.split(" ")[0];
+	return script_parse(code)[0];
 }
 /* 获取代码参数 */
 function get_code_arg(code, num) {
-	return code.split(" ")[num + 1];
+	return script_parse(code)[num + 1];
 }
 
 /* Set title */

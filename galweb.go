@@ -62,7 +62,10 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 	_html, _ := ioutil.ReadFile("resource/game.html")
 	_game_data, _ := ioutil.ReadFile(fmt.Sprintf("scripts/%s.gws", scene))
 	/* 替换game_data */
+	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\\", "\\\\")) // \ -> \\
 	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\"", "\\\"")) // " -> \"
+	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\r\n", "\n")) // CRLF -> LF
+	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\r", "\n"))   // CR -> LF
 	game_data_list := strings.Split(string(_game_data), "\n")
 	game_data := "[\n"
 	i := 0
