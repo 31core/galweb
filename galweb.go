@@ -92,16 +92,39 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 
 func HttpResource(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.URL.Path, "/")
-	data, _ := ioutil.ReadFile(fmt.Sprintf("resource/%s", path[len(path)-1]))
+	data, err := ioutil.ReadFile(fmt.Sprintf("resource/%s", path[len(path)-1]))
+
+	if err != nil {
+		log.Printf("No such file: resource/%s\n", path[len(path)-1])
+		w.WriteHeader(404)
+		return
+	}
+
+	content_type := DetectContentTypeByType(path[len(path)-1])
+	if content_type == "application/octect-stream" {
+		content_type = http.DetectContentType(data)
+	}
+	w.Header().Set("Content-Type", content_type)
 	fmt.Fprint(w, string(data))
-	w.Header().Set("Content-Type", http.DetectContentType(data))
 }
 
 func HttpData(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.URL.Path, "/")
-	data, _ := ioutil.ReadFile(fmt.Sprintf("data/%s", path[len(path)-1]))
+	data, err := ioutil.ReadFile(fmt.Sprintf("data/%s", path[len(path)-1]))
+
+	if err != nil {
+		log.Printf("No such file: data/%s\n", path[len(path)-1])
+		w.WriteHeader(404)
+		return
+	}
+
+	content_type := DetectContentTypeByType(path[len(path)-1])
+	if content_type == "application/octect-stream" {
+		content_type = http.DetectContentType(data)
+	}
+	w.Header().Set("Content-Type", content_type)
+
 	fmt.Fprint(w, string(data))
-	w.Header().Set("Content-Type", http.DetectContentType(data))
 }
 
 func HttpSave(w http.ResponseWriter, r *http.Request) {

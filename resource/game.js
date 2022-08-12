@@ -9,7 +9,7 @@ var figures = [];
 
 function script_parse(str) {
 	str = str.replaceAll(/ +/g, " ");
-	str = str.replaceAll("\\n", "<br>");
+	str = str.replaceAll("\\n", "\n");
 
 	var lis = [];
 	var last = 0;
@@ -29,6 +29,7 @@ function script_parse(str) {
 
 /* 设置对话框 */
 function dialog(character, saying) {
+	saying = saying.replaceAll("\n", "<br>");
 	document.getElementById("character").innerHTML = character;
 	document.getElementById("dialog-text").innerHTML = saying;
 }
