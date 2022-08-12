@@ -7,6 +7,11 @@ var events_disabled = false;
 var timers = [];
 var figures = [];
 
+var dialog_info = {
+	"character": "",
+	"saying": ""
+};
+
 function script_parse(str) {
 	str = str.replaceAll(/ +/g, " ");
 	str = str.replaceAll("\\n", "\n");
@@ -44,9 +49,11 @@ function execute(code) {
 		var character;
 		if(instructions.length == 2) {
 			character = "";
+			dialog_info["character"] = "";
 		}
 		else if(instructions.length == 3) {
 			character = instructions[2];
+			dialog_info["character"] = instructions[2];
 		}
 		for(var i = 0; i < saying.length; i++) {
 			timers.push(setTimeout(() => {
@@ -55,6 +62,7 @@ function execute(code) {
 				len++;
 			}, speed * i));
 		}
+		dialog_info["saying"] = instructions[1];
 	}
 	/* 切换到新的场景 */
 	else if(instructions[0] == "scene") {

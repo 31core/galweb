@@ -35,32 +35,32 @@
 	<body>
 		<img id="background" height="100%" width="100%">
 		<div id="container">
-		<button class="button" style="position: absolute;
+		<button id="1" class="button" style="position: absolute;
 			left: 2%;
 			top: 2%;
-			width: 45%;height: 25%;" onclick="on_load(1);">1</button>
-		<button class="button" style="position: absolute;
+			width: 45%;height: 25%;" onclick="on_load(1);">Empty</button>
+		<button id="2" class="button" style="position: absolute;
 			right: 2%;
 			top: 2%;
-			width: 45%;height: 25%;" onclick="on_load(2);">2</button>
+			width: 45%;height: 25%;" onclick="on_load(2);">Empty</button>
 		<br>
-		<button class="button" style="position: absolute;
+		<button id="3" class="button" style="position: absolute;
 			left: 2%;
 			top: 29%;
-			width: 45%;height: 25%;" onclick="on_load(3);">3</button>
-		<button class="button" style="position: absolute;
+			width: 45%;height: 25%;" onclick="on_load(3);">Empty</button>
+		<button id="4" class="button" style="position: absolute;
 			right: 2%;
 			top: 29%;
-			width: 45%;height: 25%;" onclick="on_load(4);">4</button>
+			width: 45%;height: 25%;" onclick="on_load(4);">Empty</button>
 		<br>
-		<button class="button" style="position: absolute;
+		<button id="5" class="button" style="position: absolute;
 			left: 2%;
 			top: 58%;
-			width: 45%;height: 25%;" onclick="on_load(5);">5</button>
-		<button class="button" style="position: absolute;
+			width: 45%;height: 25%;" onclick="on_load(5);">Empty</button>
+		<button id="6" class="button" style="position: absolute;
 			right: 2%;
 			top: 58%;
-			width: 45%;height: 25%;" onclick="on_load(6);">6</button>
+			width: 45%;height: 25%;" onclick="on_load(6);">Empty</button>
 		<button class="button" style="position: absolute;
 			right: 2%;
 			bottom: 2%;" onclick="return_to_game();">Return</button>
@@ -69,5 +69,11 @@
 	<script>
 		set_title(get_config("title"));
 		set_background(get_config("background"));
+
+		for(var i = 1; i <= 6; i++) {
+			var dict = JSON.parse(load(i.toString()));
+			var saying = dict["saying"];
+			document.getElementById(i.toString()).innerHTML = saying;
+		}
 	</script>
 </html>

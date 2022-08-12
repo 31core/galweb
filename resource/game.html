@@ -21,15 +21,14 @@
 		<div class="dialog">
 			<p id="character"></p>
 			<a class="dialog-text" id="dialog-text"></a>
-			<button class="button" style="position: absolute;
-				right: 15%;
-				bottom: 2%;" onclick="location.assign('/');">Home</button>
-			<button class="button" style="position: absolute;
-				right: 10%;
-				bottom: 2%;" onclick="to_save_page();">Save</button>
-			<button class="button" style="position: absolute;
-				right: 5%;
-				bottom: 2%;" onclick="to_load_page();">Load</button>
+			<!-- 按键组 -->
+			<p style="position: absolute;
+				right: 2%;
+				bottom: 2%;">
+				<button class="button" onclick="location.assign('/');">Home</button>
+				<button class="button" onclick="to_save_page();">Save</button>
+				<button class="button" onclick="to_load_page();">Load</button>
+			</p>
 		</div>
 		<script>
 			var game_data = {game_data};
@@ -46,7 +45,8 @@
 			}
 			function to_save_page() {
 				location.assign("/save?" + encode_url_arg({"step": (step - 1).toString(),
-					"scene": get_url_arg("scene")}));
+					"scene": get_url_arg("scene"),
+					"saying": dialog_info["saying"]}));
 			}
 			function to_load_page() {
 				location.assign("/load?" + encode_url_arg({"step": (step - 1).toString(),
