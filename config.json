@@ -1,13 +1,3 @@
 {
-	"background": "",
-	"entry": "",
-	"title": "",
-	"icon": "",
-	"background-music": "",
-
-	"#" :{
-		"#background": "Main page background",
-		"#entry": "Script name(without extension) to start",
-		"#background-music": "Main page BGM"
-	}
+    "resource_root": "./resource"
 }

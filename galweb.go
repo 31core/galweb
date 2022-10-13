@@ -9,8 +9,10 @@ import (
 	"strings"
 )
 
+var game GameData
+
 func HttpIndex(w http.ResponseWriter, r *http.Request) {
-	data, _ := ioutil.ReadFile("resource/main.html")
+	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
 	html := string(data)
 	fmt.Fprint(w, string(html))
 }
@@ -45,7 +47,7 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if command == "get_config" {
-		fmt.Fprint(w, config[r.URL.Query().Get("key")])
+		fmt.Fprint(w, game.GetConfig(r.URL.Query().Get("key")))
 		return
 	}
 	fmt.Fprintf(w, "ERROR: unkown api '%s'", command)
@@ -56,11 +58,11 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 	scene := r.URL.Query().Get("scene")
 	/* 重定向到entry */
 	if scene == "" {
-		w.Header().Set("Location", "/game?scene="+config["entry"])
+		w.Header().Set("Location", "/game?scene="+game.GetConfig("entry"))
 		w.WriteHeader(302)
 	}
-	_html, _ := ioutil.ReadFile("resource/game.html")
-	_game_data, _ := ioutil.ReadFile(fmt.Sprintf("scripts/%s.gws", scene))
+	_html, _ := ioutil.ReadFile(fmt.Sprintf("%s/game.html", config["resource_root"]))
+	_game_data, _ := game.GetFile(fmt.Sprintf("scripts/%s.gws", scene))
 	/* 替换game_data */
 	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\\", "\\\\")) // \ -> \\
 	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\"", "\\\"")) // " -> \"
@@ -92,7 +94,7 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 
 func HttpResource(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.URL.Path, "/")
-	data, err := ioutil.ReadFile(fmt.Sprintf("resource/%s", path[len(path)-1]))
+	data, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", config["resource_root"], path[len(path)-1]))
 
 	if err != nil {
 		log.Printf("No such file: resource/%s\n", path[len(path)-1])
@@ -110,7 +112,7 @@ func HttpResource(w http.ResponseWriter, r *http.Request) {
 
 func HttpData(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.URL.Path, "/")
-	data, err := ioutil.ReadFile(fmt.Sprintf("data/%s", path[len(path)-1]))
+	data, err := game.GetFile(fmt.Sprintf("data/%s", path[len(path)-1]))
 
 	if err != nil {
 		log.Printf("No such file: data/%s\n", path[len(path)-1])
@@ -128,19 +130,19 @@ func HttpData(w http.ResponseWriter, r *http.Request) {
 }
 
 func HttpSave(w http.ResponseWriter, r *http.Request) {
-	data, _ := ioutil.ReadFile("resource/save.html")
+	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/save.html", config["resource_root"]))
 	fmt.Fprint(w, string(data))
 }
 
 func HttpLoad(w http.ResponseWriter, r *http.Request) {
-	data, _ := ioutil.ReadFile("resource/load.html")
+	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/load.html", config["resource_root"]))
 	fmt.Fprint(w, string(data))
 }
 
 func HttpIcon(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadFile("data/" + config["icon"])
+	data, err := game.GetFile("data/" + game.GetConfig("icon"))
 	if err != nil {
-		log.Printf("No such icon: %s\n", config["icon"])
+		log.Printf("No such icon: %s\n", game.GetConfig("icon"))
 		w.WriteHeader(404)
 		return
 	}
@@ -149,6 +151,7 @@ func HttpIcon(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	game.Open(os.Args[1])
 	LoadConfig()
 	DefaultConfig()
 
