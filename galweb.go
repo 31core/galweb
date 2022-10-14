@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var game GameData
+var game GamePack
 
 func HttpIndex(w http.ResponseWriter, r *http.Request) {
 	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
@@ -151,17 +151,22 @@ func HttpIcon(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	game.Open(os.Args[1])
-	LoadConfig()
-	DefaultConfig()
+	if os.Args[1] == "run" {
+		game.Open(os.Args[2])
+		LoadConfig()
+		DefaultConfig()
 
-	http.HandleFunc("/", HttpIndex)
-	http.HandleFunc("/game", HttpGame)
-	http.HandleFunc("/api/", HttpAPI)
-	http.HandleFunc("/resource/", HttpResource)
-	http.HandleFunc("/data/", HttpData)
-	http.HandleFunc("/save", HttpSave)
-	http.HandleFunc("/load", HttpLoad)
-	http.HandleFunc("/favicon.ico", HttpIcon)
-	http.ListenAndServe(":5000", nil)
+		http.HandleFunc("/", HttpIndex)
+		http.HandleFunc("/game", HttpGame)
+		http.HandleFunc("/api/", HttpAPI)
+		http.HandleFunc("/resource/", HttpResource)
+		http.HandleFunc("/data/", HttpData)
+		http.HandleFunc("/save", HttpSave)
+		http.HandleFunc("/load", HttpLoad)
+		http.HandleFunc("/favicon.ico", HttpIcon)
+		http.ListenAndServe(":5000", nil)
+	}
+	if os.Args[1] == "build" {
+		BuildGamePack(os.Args[2], os.Args[3])
+	}
 }
