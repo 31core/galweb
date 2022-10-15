@@ -151,10 +151,19 @@ func HttpIcon(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	if len(os.Args) < 2 || os.Args[1] == "help" {
+		fmt.Println(`Usage: ./galweb [command] [args]...
+options:
+run [game pack]
+build [source directory] [game_pack]`)
+		return
+	}
 	if os.Args[1] == "run" {
 		game.Open(os.Args[2])
 		LoadConfig()
 		DefaultConfig()
+
+		log.Printf("Server is running on %s:%s\n", config["host"], config["port"])
 
 		http.HandleFunc("/", HttpIndex)
 		http.HandleFunc("/game", HttpGame)
@@ -164,7 +173,7 @@ func main() {
 		http.HandleFunc("/save", HttpSave)
 		http.HandleFunc("/load", HttpLoad)
 		http.HandleFunc("/favicon.ico", HttpIcon)
-		http.ListenAndServe(":5000", nil)
+		http.ListenAndServe(fmt.Sprintf("%s:%s", config["host"], config["port"]), nil)
 	}
 	if os.Args[1] == "build" {
 		BuildGamePack(os.Args[2], os.Args[3])

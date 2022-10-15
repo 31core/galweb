@@ -1,3 +1,5 @@
 {
-    "resource_root": "./resource"
+    "resource_root": "./resource",
+    "host": "localhost",
+    "port": "5000"
 }

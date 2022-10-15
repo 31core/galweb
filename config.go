@@ -9,8 +9,11 @@ import (
 var config map[string]string
 
 func DefaultConfig() {
-	if _, ok := config["text-speed"]; !ok {
-		config["text-speed"] = "100"
+	if _, ok := config["host"]; !ok {
+		config["host"] = "localhost"
+	}
+	if _, ok := config["port"]; !ok {
+		config["port"] = "5000"
 	}
 }
 

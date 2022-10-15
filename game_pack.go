@@ -26,10 +26,9 @@ func (self *GamePack) GetFile(path string) ([]byte, error) {
 	for _, f := range self.f.File {
 		if f.Name == path {
 			rc, _ := f.Open()
-			var data bytes.Buffer
-			io.Copy(&data, rc)
+			data, _ := io.ReadAll(rc)
 			rc.Close()
-			return data.Bytes(), nil
+			return data, nil
 		}
 	}
 	return []byte{}, fmt.Errorf("no such file: %s", path)
@@ -51,6 +50,9 @@ func (self *GamePack) Close() error {
 }
 
 func ListDir(path string) []string {
+	if len(path) > 1 && path[0:2] == "./" {
+		path = path[2:]
+	}
 	var files []string
 	dir, err := ioutil.ReadDir(path)
 	if err != nil {
@@ -60,20 +62,28 @@ func ListDir(path string) []string {
 		if fi.IsDir() {
 			files = append(files, ListDir(path+"/"+fi.Name())...)
 		} else {
-			files = append(files, path+"/"+fi.Name())
+			if path[0] == '.' {
+				files = append(files, fi.Name())
+			} else {
+				files = append(files, path+"/"+fi.Name())
+			}
 		}
 	}
 	return files
 }
 
 func BuildGamePack(src, out string) {
+	now_dir, _ := os.Getwd()
+	os.Chdir(src)
 	var data bytes.Buffer
 	z := zip.NewWriter(&data)
-	for _, file := range ListDir(src) {
+	fmt.Println(ListDir("."))
+	for _, file := range ListDir(".") {
 		content, _ := z.Create(file)
 		dt, _ := ioutil.ReadFile(file)
 		content.Write(dt)
 	}
 	z.Close()
+	os.Chdir(now_dir)
 	ioutil.WriteFile(out, data.Bytes(), os.ModePerm)
 }
