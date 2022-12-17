@@ -11,7 +11,7 @@ import (
 
 var game GamePack
 
-func HttpIndex(w http.ResponseWriter, r *http.Request) {
+func HttpHomePage(w http.ResponseWriter, r *http.Request) {
 	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
 	html := string(data)
 	fmt.Fprint(w, string(html))
@@ -47,7 +47,14 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if command == "get_config" {
-		fmt.Fprint(w, game.GetConfig(r.URL.Query().Get("key")))
+		conf, err := game.GetConfig(r.URL.Query().Get("key"))
+		if err != nil {
+			log.Printf("\"%s\" is not defiened in package.json\n", r.URL.Query().Get("key"))
+			fmt.Printf("\"%s\" is not defiened in package.json", r.URL.Query().Get("key"))
+			w.WriteHeader(500)
+			return
+		}
+		fmt.Fprint(w, conf)
 		return
 	}
 	fmt.Fprintf(w, "ERROR: unkown api '%s'", command)
@@ -56,14 +63,26 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 
 func HttpGame(w http.ResponseWriter, r *http.Request) {
 	scene := r.URL.Query().Get("scene")
-	/* 重定向到entry */
+	/* redirect to entry */
 	if scene == "" {
-		w.Header().Set("Location", "/game?scene="+game.GetConfig("entry"))
+		entry, err := game.GetConfig("entry")
+		if err != nil {
+			log.Panicln("\"entry\" is not defiened in package.json")
+			fmt.Fprintln(w, "\"entry\" is not defiened in package.json")
+			w.WriteHeader(500)
+			return
+		}
+		w.Header().Set("Location", "/game?scene="+entry)
 		w.WriteHeader(302)
 	}
 	_html, _ := ioutil.ReadFile(fmt.Sprintf("%s/game.html", config["resource_root"]))
-	_game_data, _ := game.GetFile(fmt.Sprintf("scripts/%s.gws", scene))
-	/* 替换game_data */
+	_game_data, err := game.GetFile(fmt.Sprintf("scripts/%s.gws", scene))
+	if err != nil {
+		fmt.Fprintf(w, "Could not open scripts/%s.gws", scene)
+		log.Printf("Could not open scripts/%s.gws\n", scene)
+		return
+	}
+	/* replace game_data */
 	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\\", "\\\\")) // \ -> \\
 	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\"", "\\\"")) // " -> \"
 	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\r\n", "\n")) // CRLF -> LF
@@ -140,9 +159,16 @@ func HttpLoad(w http.ResponseWriter, r *http.Request) {
 }
 
 func HttpIcon(w http.ResponseWriter, r *http.Request) {
-	data, err := game.GetFile("data/" + game.GetConfig("icon"))
+	icon, err := game.GetConfig("icon")
 	if err != nil {
-		log.Printf("No such icon: %s\n", game.GetConfig("icon"))
+		fmt.Fprint(w, "\"icon\" is not defined in package.json")
+		log.Println("\"icon\" is not defined in package.json")
+		w.WriteHeader(500)
+		return
+	}
+	data, err := game.GetFile("data/" + icon)
+	if err != nil {
+		log.Printf("No such icon: %s\n", icon)
 		w.WriteHeader(404)
 		return
 	}
@@ -165,7 +191,7 @@ build [source directory] [game_pack]`)
 
 		log.Printf("Server is running on %s:%s\n", config["host"], config["port"])
 
-		http.HandleFunc("/", HttpIndex)
+		http.HandleFunc("/", HttpHomePage)
 		http.HandleFunc("/game", HttpGame)
 		http.HandleFunc("/api/", HttpAPI)
 		http.HandleFunc("/resource/", HttpResource)

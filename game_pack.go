@@ -34,15 +34,18 @@ func (self *GamePack) GetFile(path string) ([]byte, error) {
 	return []byte{}, fmt.Errorf("no such file: %s", path)
 }
 
-func (self *GamePack) GetConfig(key string) string {
+func (self *GamePack) GetConfig(key string) (string, error) {
 	if self.Config == nil {
 		var config map[string]string
-		cfg, _ := self.GetFile("config.json")
+		cfg, err := self.GetFile("package.json")
+		if err != nil {
+			return "", fmt.Errorf("Couldn't read package.json\n")
+		}
 		json.Unmarshal(cfg, &config)
 		self.Config = &config
-		return config[key]
+		return config[key], nil
 	}
-	return (*self.Config)[key]
+	return (*self.Config)[key], nil
 }
 
 func (self *GamePack) Close() error {
@@ -77,8 +80,8 @@ func BuildGamePack(src, out string) {
 	os.Chdir(src)
 	var data bytes.Buffer
 	z := zip.NewWriter(&data)
-	fmt.Println(ListDir("."))
 	for _, file := range ListDir(".") {
+		fmt.Printf("Adding %s\n", file)
 		content, _ := z.Create(file)
 		dt, _ := ioutil.ReadFile(file)
 		content.Write(dt)

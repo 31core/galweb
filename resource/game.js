@@ -32,7 +32,7 @@ function script_parse(str) {
 	return lis;
 }
 
-/* 设置对话框 */
+/* Set dialog text */
 function dialog(character, saying) {
 	saying = saying.replaceAll("\n", "<br>");
 	document.getElementById("character").innerHTML = character;
@@ -64,11 +64,11 @@ function execute(code) {
 		}
 		dialog_info["saying"] = instructions[1];
 	}
-	/* 切换到新的场景 */
+	/* switch to the next scene */
 	else if(instructions[0] == "scene") {
 		location.assign("/game?scene=" + instructions[1]);
 	}
-	/* 替换背景 */
+	/* change background image */
 	else if(instructions[0] == "background") {
 		var opacity = 10;
 		var background = document.getElementById("background");
