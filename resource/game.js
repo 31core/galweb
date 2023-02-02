@@ -1,4 +1,8 @@
-var speed = Number.parseInt(get_config("text-speed"));
+var speed;
+get_config("text-speed").then((data) => {
+	speed = Number.parseInt(data);
+});
+
 var music;
 var current_background = "";
 var current_music = "";
@@ -39,10 +43,10 @@ function dialog(character, saying) {
 	document.getElementById("dialog-text").innerHTML = saying;
 }
 
-/* 执行script代码 */
+/* execute script */
 function execute(code) {
 	var instructions = script_parse(code);
-	/* 设置对话框 */
+	/* set dialog text */
 	if(instructions[0] == "say") {
 		var len = 0;
 		var saying = get_code_arg(code, 0);
@@ -147,18 +151,18 @@ function execute(code) {
 		}
 	}
 }
-/* 获取代码类型 */
+/* get code type */
 function get_code_type(code) {
 	return script_parse(code)[0];
 }
-/* 获取代码参数 */
+/* get code args */
 function get_code_arg(code, num) {
 	return script_parse(code)[num + 1];
 }
 
 /* Set title */
 function set_title(title) {
-	document.getElementsByTagName("title")[0].innerHTML = get_config("title");
+	document.getElementsByTagName("title")[0].innerHTML = title;
 }
 /* Set background image */
 function set_background(filename) {

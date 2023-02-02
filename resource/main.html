@@ -2,11 +2,11 @@
 <html>
 	<head>
 		<title></title>
-		<link href="/resource/style.css" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="/resource/info.js"></script>
-		<script type="text/javascript" src="/resource/api.js"></script>
-		<script type="text/javascript" src="/resource/game.js"></script>
-		<script type="text/javascript" src="/resource/runtime.js"></script>
+		<link href="/resource/style.css" rel="stylesheet">
+		<script src="/resource/info.js"></script>
+		<script src="/resource/api.js"></script>
+		<script src="/resource/game.js"></script>
+		<script src="/resource/runtime.js"></script>
 	</head>
 	<style>
 		#container
@@ -52,8 +52,13 @@
 		</div>
 	</body>
 	<script>
-		set_title(get_config("title"));
-		set_background(get_config("background"));
+		get_config("title").then((title) => {
+			set_title(title);
+		});
+
+		get_config("background").then((background) => {
+			set_background(background);
+		});
 
 		var music_url = get_config("background-music");
 		if(music_url != "") {

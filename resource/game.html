@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link href="/resource/style.css" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="/resource/info.js"></script>
-		<script type="text/javascript" src="/resource/runtime.js"></script>
-		<script type="text/javascript" src="/resource/api.js"></script>
-		<script type="text/javascript" src="/resource/game.js"></script>
-		<script type="text/javascript" src="/resource/events.js"></script>
+		<link href="/resource/style.css" rel="stylesheet">
+		<script src="/resource/info.js"></script>
+		<script src="/resource/runtime.js"></script>
+		<script src="/resource/api.js"></script>
+		<script src="/resource/game.js"></script>
+		<script src="/resource/events.js"></script>
 		<title></title>
 	</head>
 	<body>
@@ -31,18 +31,13 @@
 			</p>
 		</div>
 		<script>
-			var game_data = {game_data};
-			/* 恢复状态 */
-			if(get_url_arg("step") != undefined) {
-				step = Number.parseInt(get_url_arg("step"));
-			}
-			fastward();
-			if(current_background != "") {
-				set_background(current_background);
-			}
-			if(current_music != "") {
-				play_sound(current_music);
-			}
+			get_config("title").then((title) => {
+				set_title(title);
+			});
+
+			get_config("background").then((background) => {
+				set_background(background);
+			});
 			function to_save_page() {
 				location.assign("/save?" + encode_url_arg({"step": (step - 1).toString(),
 					"scene": get_url_arg("scene"),
@@ -53,8 +48,26 @@
 					"scene": get_url_arg("scene"),
 					"origin": location.pathname}));
 			}
-			on_click();
-			set_title(get_config("title"));
+			var game_data;
+			fetch("/script/" + get_url_arg("scene")).then((res) => {
+				return res.text()
+			}).then((data) => {
+				game_data = data;
+				game_data = game_data.replaceAll("\r\n", "\n");
+				game_data = game_data.split("\n");
+				/* 恢复状态 */
+				if(get_url_arg("step") != undefined) {
+					step = Number.parseInt(get_url_arg("step"));
+				}
+				fastward();
+				if(current_background != "") {
+					set_background(current_background);
+				}
+				if(current_music != "") {
+					play_sound(current_music);
+				}
+				on_click();
+			});
 		</script>
 	</body>
 </html>

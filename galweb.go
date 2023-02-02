@@ -11,12 +11,6 @@ import (
 
 var game GamePack
 
-func HttpHomePage(w http.ResponseWriter, r *http.Request) {
-	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
-	html := string(data)
-	fmt.Fprint(w, string(html))
-}
-
 func HttpAPI(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.URL.Path, "/")
 	command := path[len(path)-1]
@@ -75,40 +69,8 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Location", "/game?scene="+entry)
 		w.WriteHeader(302)
 	}
-	_html, _ := ioutil.ReadFile(fmt.Sprintf("%s/game.html", config["resource_root"]))
-	_game_data, err := game.GetFile(fmt.Sprintf("scripts/%s.gws", scene))
-	if err != nil {
-		fmt.Fprintf(w, "Could not open scripts/%s.gws", scene)
-		log.Printf("Could not open scripts/%s.gws\n", scene)
-		return
-	}
-	/* replace game_data */
-	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\\", "\\\\")) // \ -> \\
-	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\"", "\\\"")) // " -> \"
-	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\r\n", "\n")) // CRLF -> LF
-	_game_data = []byte(strings.ReplaceAll(string(_game_data), "\r", "\n"))   // CR -> LF
-	game_data_list := strings.Split(string(_game_data), "\n")
-	game_data := "[\n"
-	i := 0
-	for {
-		if i == len(game_data_list) {
-			game_data = game_data[:len(game_data)-1] //delete ','
-			break
-		}
-		if game_data_list[i] == "" {
-			i++
-			continue
-		}
-		game_data = fmt.Sprintf("%s\n\"%s\",", game_data, game_data_list[i])
-		i++
-	}
-	game_data = fmt.Sprintf("%s\n%s", game_data, "]")
-	/* game_data: [
-		"x",
-		"x"
-	] */
-	html := strings.ReplaceAll(string(_html), "{game_data}", game_data)
-	fmt.Fprint(w, html)
+	game_html, _ := ioutil.ReadFile(fmt.Sprintf("%s/game.html", config["resource_root"]))
+	fmt.Fprint(w, string(game_html))
 }
 
 func HttpResource(w http.ResponseWriter, r *http.Request) {
@@ -148,13 +110,16 @@ func HttpData(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(data))
 }
 
-func HttpSave(w http.ResponseWriter, r *http.Request) {
-	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/save.html", config["resource_root"]))
-	fmt.Fprint(w, string(data))
-}
+func HttScript(w http.ResponseWriter, r *http.Request) {
+	path := strings.Split(r.URL.Path, "/")
+	data, err := game.GetFile(fmt.Sprintf("scripts/%s.gws", path[len(path)-1]))
 
-func HttpLoad(w http.ResponseWriter, r *http.Request) {
-	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/load.html", config["resource_root"]))
+	if err != nil {
+		log.Printf("No such file: scripts/%s.gws\n", path[len(path)-1])
+		w.WriteHeader(404)
+		return
+	}
+
 	fmt.Fprint(w, string(data))
 }
 
@@ -189,15 +154,30 @@ build [source directory] [game_pack]`)
 		LoadConfig()
 		DefaultConfig()
 
+		if _, err := os.Stat("./saves"); os.IsNotExist(err) {
+			os.Mkdir("./saves", os.ModePerm)
+		}
+
 		log.Printf("Server is running on %s:%s\n", config["host"], config["port"])
 
-		http.HandleFunc("/", HttpHomePage)
+		http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
+			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
+			html := string(data)
+			fmt.Fprint(w, string(html))
+		})
 		http.HandleFunc("/game", HttpGame)
 		http.HandleFunc("/api/", HttpAPI)
 		http.HandleFunc("/resource/", HttpResource)
 		http.HandleFunc("/data/", HttpData)
-		http.HandleFunc("/save", HttpSave)
-		http.HandleFunc("/load", HttpLoad)
+		http.HandleFunc("/script/", HttScript)
+		http.HandleFunc("/save", func (w http.ResponseWriter, r *http.Request) {
+			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/save.html", config["resource_root"]))
+			fmt.Fprint(w, string(data))
+		})
+		http.HandleFunc("/load", func (w http.ResponseWriter, r *http.Request) {
+			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/load.html", config["resource_root"]))
+			fmt.Fprint(w, string(data))
+		})
 		http.HandleFunc("/favicon.ico", HttpIcon)
 		http.ListenAndServe(fmt.Sprintf("%s:%s", config["host"], config["port"]), nil)
 	}
