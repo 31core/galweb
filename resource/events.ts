@@ -16,7 +16,7 @@ function on_click() {
 		}
 		dialog(character, saying);
 		/* 取消之前的计时器 */
-		for(var i = 0; i < timers.length; i++) {
+		for(let i = 0; i < timers.length; i++) {
 			clearTimeout(timers[i]);
 		}
 		timers = [];
@@ -33,12 +33,12 @@ function on_click() {
 	}
 }
 
-function on_keydown() {
+function on_keydown(event: KeyboardEvent) {
 	if(events_disabled) {
 		return;
 	}
-	if(window.event.keyCode == 13 ||
-		window.event.keyCode == 32) {
+	if(event.key == "Enter" ||
+	event.key == " ") {
 		on_click();
 	}
 }

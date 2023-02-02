@@ -5,13 +5,13 @@
 		<script src="/resource/info.js"></script>
 		<script src="/resource/runtime.js"></script>
 		<script src="/resource/api.js"></script>
-		<script src="/resource/game.js"></script>
 		<script src="/resource/events.js"></script>
-		<title></title>
+		<script src="/resource/game.js"></script>
+		<title id="title"></title>
 	</head>
-	<body>
-		<img onclick="on_click();" onkeydown="on_keydown();" id="background" height="100%" width="100%">
-		<div onclick="on_click();" onkeydown="on_keydown();" id="figures"></div>
+	<body onkeydown="on_keydown(event);">
+		<img onclick="on_click();" id="background" height="100%" width="100%">
+		<div onclick="on_click();" id="figures"></div>
 		<!-- 分支选择对话框 -->
 		<div id="branch" hidden="hidden" class="dialog" style="position: absolute;
 			top: 20%;
@@ -48,26 +48,6 @@
 					"scene": get_url_arg("scene"),
 					"origin": location.pathname}));
 			}
-			var game_data;
-			fetch("/script/" + get_url_arg("scene")).then((res) => {
-				return res.text()
-			}).then((data) => {
-				game_data = data;
-				game_data = game_data.replaceAll("\r\n", "\n");
-				game_data = game_data.split("\n");
-				/* 恢复状态 */
-				if(get_url_arg("step") != undefined) {
-					step = Number.parseInt(get_url_arg("step"));
-				}
-				fastward();
-				if(current_background != "") {
-					set_background(current_background);
-				}
-				if(current_music != "") {
-					play_sound(current_music);
-				}
-				on_click();
-			});
 		</script>
 	</body>
 </html>

@@ -1,3 +1,24 @@
+var game_data;
+fetch("/script/" + get_url_arg("scene")).then((res) => {
+	return res.text()
+}).then((data) => {
+	game_data = data;
+	game_data = game_data.replaceAll("\r\n", "\n");
+	game_data = game_data.split("\n");
+	/* 恢复状态 */
+	if(get_url_arg("step") != "") {
+		step = Number.parseInt(get_url_arg("step"));
+	}
+	fastward();
+	if(current_background != "") {
+		set_background(current_background);
+	}
+	if(current_music != "") {
+		play_sound(current_music);
+	}
+	on_click();
+});
+
 var speed;
 get_config("text-speed").then((data) => {
 	speed = Number.parseInt(data);
@@ -8,19 +29,19 @@ var current_background = "";
 var current_music = "";
 var events_disabled = false;
 
-var timers = [];
-var figures = [];
+var timers: number[] = [];
+var figures: HTMLImageElement[] = [];
 
 var dialog_info = {
 	"character": "",
 	"saying": ""
 };
 
-function script_parse(str) {
+function script_parse(str: string) {
 	str = str.replaceAll(/ +/g, " ");
 	str = str.replaceAll("\\n", "\n");
 
-	var lis = [];
+	var lis: string[] = [];
 	var last = 0;
 	for(var i = 1; i < str.length; i++) {
 		if(str[i] == " " && str[i - 1] != "\\") {
@@ -37,14 +58,14 @@ function script_parse(str) {
 }
 
 /* Set dialog text */
-function dialog(character, saying) {
+function dialog(character: string, saying: string) {
 	saying = saying.replaceAll("\n", "<br>");
 	document.getElementById("character").innerHTML = character;
 	document.getElementById("dialog-text").innerHTML = saying;
 }
 
 /* execute script */
-function execute(code) {
+function execute(code: string) {
 	var instructions = script_parse(code);
 	/* set dialog text */
 	if(instructions[0] == "say") {
@@ -125,7 +146,7 @@ function execute(code) {
 		figures_div.appendChild(figure);
 	}
 	else if(instructions[0] == "clean-figure") {
-		for(var i = 0; i < figures.length; i++) {
+		for(let i = 0; i < figures.length; i++) {
 			figures[i].remove();
 		}
 		figures = [];
@@ -152,25 +173,25 @@ function execute(code) {
 	}
 }
 /* get code type */
-function get_code_type(code) {
+function get_code_type(code: string) {
 	return script_parse(code)[0];
 }
 /* get code args */
-function get_code_arg(code, num) {
+function get_code_arg(code: string, num: number) {
 	return script_parse(code)[num + 1];
 }
 
 /* Set title */
-function set_title(title) {
-	document.getElementsByTagName("title")[0].innerHTML = title;
+function set_title(title: string) {
+	document.getElementById("title").innerHTML = title;
 }
 /* Set background image */
-function set_background(filename) {
+function set_background(filename: string) {
 	current_background = filename;
-	document.getElementById("background").src = "/data/" + filename;
+	document.getElementById("background").setAttribute("src", "/data/" + filename);
 }
 
-function play_sound(filename) {
+function play_sound(filename: string) {
 	current_music = filename;
 	music = new Audio("/data/" + filename);
 	music.loop = true;
