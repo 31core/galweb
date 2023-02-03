@@ -10,13 +10,13 @@ function save(name: string, data: string) {
 }
 
 /* Load game data */
-async function load(name: string) {
+async function load(name: string): Promise<string> {
 	let res = await fetch("/api/load?name=" + name);
 	return res.text();
 }
 
-/* 获取配置信息 */
-async function get_config(key: string) {
+/* get config from server */
+async function get_config(key: string): Promise<string> {
 	let res = await fetch("/api/get_config?key=" + key);
 	return res.text();
 }

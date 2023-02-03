@@ -6,8 +6,8 @@ function on_click() {
 	}
 	/* 如果文字还没显示完全则显全 */
 	if(timers.length != 0) {
-		var saying = game_data[step - 1].split(" ")[1];
-		var character;
+		let saying = game_data[step - 1].split(" ")[1];
+		let character: string;
 		if(game_data[step - 1].split(" ").length == 2) {
 			character = "";
 		}

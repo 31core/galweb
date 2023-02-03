@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		CSS(/resource/style.css)
-		import(/resource/info.js)
-		import(/resource/runtime.js)
-		import(/resource/api.js)
-		import(/resource/events.js)
-		import(/resource/game.js)
 		<title id="title"></title>
+		CSS(/resource/style.css)
+		JS(/resource/info.js)
+		JS(/resource/runtime.js)
+		JS(/resource/api.js)
+		JS(/resource/events.js)
+		JS(/resource/game.js)
 	</head>
 	<body onkeydown="on_keydown(event);">
 		<img onclick="on_click();" id="background" height="100%" width="100%">
@@ -35,9 +35,6 @@
 				set_title(title);
 			});
 
-			get_config("background").then((background) => {
-				set_background(background);
-			});
 			function to_save_page() {
 				location.assign("/save?" + encode_url_arg({"step": (step - 1).toString(),
 					"scene": get_url_arg("scene"),

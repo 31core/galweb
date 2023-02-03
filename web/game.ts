@@ -1,11 +1,10 @@
-var game_data;
+var game_data: string[];
 fetch("/script/" + get_url_arg("scene")).then((res) => {
 	return res.text()
 }).then((data) => {
-	game_data = data;
-	game_data = game_data.replaceAll("\r\n", "\n");
-	game_data = game_data.split("\n");
-	/* 恢复状态 */
+	data = data.replaceAll("\r\n", "\n");
+	game_data = data.split("\n");
+	/* restore */
 	if(get_url_arg("step") != "") {
 		step = Number.parseInt(get_url_arg("step"));
 	}
@@ -19,7 +18,7 @@ fetch("/script/" + get_url_arg("scene")).then((res) => {
 	on_click();
 });
 
-var speed;
+var speed: number;
 get_config("text-speed").then((data) => {
 	speed = Number.parseInt(data);
 });
@@ -29,21 +28,21 @@ var current_background: string;
 var current_music: string;
 var events_disabled = false;
 
-var timers: number[] = [];
-var figures: HTMLImageElement[] = [];
+var timers: number[];
+var figures: HTMLImageElement[];
 
 var dialog_info = {
 	"character": "",
 	"saying": ""
 };
 
-function script_parse(str: string) {
+function script_parse(str: string): string[] {
 	str = str.replaceAll(/ +/g, " ");
 	str = str.replaceAll("\\n", "\n");
 
-	var lis: string[] = [];
-	var last = 0;
-	for(var i = 1; i < str.length; i++) {
+	let lis: string[];
+	let last = 0;
+	for(let i = 1; i < str.length; i++) {
 		if(str[i] == " " && str[i - 1] != "\\") {
 			lis.push(str.slice(last, i));
 			last = i + 1;
@@ -51,7 +50,7 @@ function script_parse(str: string) {
 	}
 	lis.push(str.slice(last, str.length));
 
-	for(var i = 0; i < lis.length; i++) {
+	for(let i = 0; i < lis.length; i++) {
 		lis[i] = lis[i].replaceAll("\\ ", " ");
 	}
 	return lis;
@@ -66,12 +65,12 @@ function dialog(character: string, saying: string) {
 
 /* execute script */
 function execute(code: string) {
-	var instructions = script_parse(code);
+	let instructions = script_parse(code);
 	/* set dialog text */
 	if(instructions[0] == "say") {
-		var len = 0;
-		var saying = get_code_arg(code, 0);
-		var character;
+		let len = 0;
+		let saying = get_code_arg(code, 0);
+		let character: string;
 		if(instructions.length == 2) {
 			character = "";
 			dialog_info["character"] = "";
@@ -80,7 +79,7 @@ function execute(code: string) {
 			character = instructions[2];
 			dialog_info["character"] = instructions[2];
 		}
-		for(var i = 0; i < saying.length; i++) {
+		for(let i = 0; i < saying.length; i++) {
 			timers.push(setTimeout(() => {
 				timers = timers.slice(1);
 				dialog(character, saying.slice(0, len + 1));
@@ -95,29 +94,12 @@ function execute(code: string) {
 	}
 	/* change background image */
 	else if(instructions[0] == "background") {
-		var opacity = 10;
-		var background = document.getElementById("background");
-		var time = 0;
-		for(; time < 10; time++) {
-			setTimeout(() => {
-				background.setAttribute("style", "opacity: " + (10 * opacity).toString() + "%;");
-				opacity--;
-			},
-			time * 15);
-		}
-		time++;
-		setTimeout(() => {
+		let background = document.getElementById("background");
+		background.setAttribute("style", "animation: background_disappearing 0.5s;");
+		background.addEventListener("animationend", () => {
 			set_background(instructions[1]);
-		},
-		time * 10);
-		time++
-		for(; time < 23; time++) {
-			setTimeout(() => {
-				background.setAttribute("style", "opacity: " + (10 * opacity).toString() + "%;");
-				opacity++;
-			},
-			time * 15);
-		}
+			background.setAttribute("style", "animation: background_appearing 0.5s;");
+		});
 	}
 	else if(instructions[0] == "play-sound") {
 		play_sound(instructions[1])
@@ -137,7 +119,7 @@ function execute(code: string) {
 			console.log("Warning: It's not a goot idea to add more than 3 figures.");
 		}
 
-		for(var i = 0; i < figures.length; i++) {
+		for(let i = 0; i < figures.length; i++) {
 			figures[i].setAttribute("style", `position: absolute;
 				top: 10%;
 				left: ` + ((100 / figures.length) * i + 10).toString() + `%;
@@ -153,10 +135,9 @@ function execute(code: string) {
 	}
 	else if(instructions[0] == "choice") {
 		events_disabled = true;
-		var branch = {};
-		var choice = [];
+		let choice: HTMLAnchorElement[];
 		document.getElementById("branch").removeAttribute("hidden");
-		for(var i = 1; i < instructions.length; i++) {
+		for(let i = 1; i < instructions.length; i++) {
 			choice.push(document.createElement("a"));
 			choice[i - 1].innerHTML = instructions[i].split(":")[0];
 
@@ -205,7 +186,7 @@ function stop_sound() {
 
 /* 通过step获取现在的状态 */
 function fastward() {
-	for(var i = 0; i < step; i++) {
+	for(let i = 0; i < step; i++) {
 		if(get_code_type(game_data[i]) == "background") {
 			current_background = get_code_arg(game_data[i], 0);
 		}
