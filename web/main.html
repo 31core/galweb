@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title id="title"></title>
+		CSS(/resource/style.css)
+		import(/resource/info.js)
+		import(/resource/api.js)
+		import(/resource/game.js)
+		import(/resource/runtime.js)
+	</head>
+	<style>
+		#container
+		{
+			position: fixed;
+			left: 10%;
+			top: 40%;
+			width: 20%;
+			background-color: aliceblue;
+			border-style: solid;
+			border-color: #66cbea;
+			border-radius: 5px;
+			opacity: 70%;
+		}
+		#group
+		{
+			position: relative;
+			left: 10%;
+		}
+	</style>
+	<script>
+		function Continue() {
+			var dict = JSON.parse(load("autosave"));
+			location.assign("/game?" + encode_url_arg(dict));
+		}
+		function Start() {
+			location.assign("/game");
+		}
+		function Load() {
+			location.assign("/load?origin=/");
+		}
+	</script>
+	<body>
+		<img id="background" height="100%" width="100%">
+		<div id="container">
+			<p id="group">
+				<button class="button" style="width: 80%;" onclick="Continue();">Continue</button>
+				<br><br>
+				<button class="button" style="width: 80%;" onclick="Start();">Start</button>
+				<br><br>
+				<button class="button" style="width: 80%;" onclick="Load();">Load</button>
+			</p>
+		</div>
+	</body>
+	<script>
+		get_config("title").then((title) => {
+			set_title(title);
+		});
+
+		get_config("background").then((background) => {
+			set_background(background);
+		});
+
+		var music_url = get_config("background-music");
+		if(music_url != "") {
+			music = new Audio("data/" + music_url);
+			music.loop = true;
+			music.play();
+		}
+	</script>
+</html>

@@ -24,9 +24,9 @@ get_config("text-speed").then((data) => {
 	speed = Number.parseInt(data);
 });
 
-var music;
-var current_background = "";
-var current_music = "";
+var music: HTMLAudioElement;
+var current_background: string;
+var current_music: string;
 var events_disabled = false;
 
 var timers: number[] = [];
@@ -127,8 +127,8 @@ function execute(code: string) {
 	}
 	/* 添加人物立绘 */
 	else if(instructions[0] == "figure") {
-		var figures_div = document.getElementById("figures");
-		var figure = document.createElement("img");
+		let figures_div = document.getElementById("figures");
+		let figure = document.createElement("img");
 		figures.push(figure);
 
 		figure.setAttribute("src", "/data/" + instructions[1]);

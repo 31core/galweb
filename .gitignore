@@ -2,3 +2,5 @@ galweb
 data/
 scripts/
 saves/
+resource/
+*.js

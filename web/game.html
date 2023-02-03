@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		CSS(/resource/style.css)
+		import(/resource/info.js)
+		import(/resource/runtime.js)
+		import(/resource/api.js)
+		import(/resource/events.js)
+		import(/resource/game.js)
+		<title id="title"></title>
+	</head>
+	<body onkeydown="on_keydown(event);">
+		<img onclick="on_click();" id="background" height="100%" width="100%">
+		<div onclick="on_click();" id="figures"></div>
+		<!-- 分支选择对话框 -->
+		<div id="branch" hidden="hidden" class="dialog" style="position: absolute;
+			top: 20%;
+			left: 15%;
+			width: 70%;"></div>
+		<!-- 对话框 -->
+		<div class="dialog">
+			<p id="character"></p>
+			<a class="dialog-text" id="dialog-text"></a>
+			<!-- 按键组 -->
+			<p style="position: absolute;
+				right: 2%;
+				bottom: 2%;">
+				<button class="button" onclick="location.assign('/');">Home</button>
+				<button class="button" onclick="to_save_page();">Save</button>
+				<button class="button" onclick="to_load_page();">Load</button>
+			</p>
+		</div>
+		<script>
+			get_config("title").then((title) => {
+				set_title(title);
+			});
+
+			get_config("background").then((background) => {
+				set_background(background);
+			});
+			function to_save_page() {
+				location.assign("/save?" + encode_url_arg({"step": (step - 1).toString(),
+					"scene": get_url_arg("scene"),
+					"saying": dialog_info["saying"]}));
+			}
+			function to_load_page() {
+				location.assign("/load?" + encode_url_arg({"step": (step - 1).toString(),
+					"scene": get_url_arg("scene"),
+					"origin": location.pathname}));
+			}
+		</script>
+	</body>
+</html>
