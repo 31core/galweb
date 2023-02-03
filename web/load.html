@@ -63,10 +63,12 @@
 			set_background(background);
 		});
 
-		for(var i = 1; i <= 6; i++) {
-			var dict = JSON.parse(load(i.toString()));
-			var saying = dict["saying"];
-			document.getElementById(i.toString()).innerHTML = saying;
+		for(let i = 1; i <= 6; i++) {
+			load(i.toString()).then((data) => {
+				let dict = JSON.parse(data);
+				let saying = dict["saying"];
+				document.getElementById(i.toString()).innerHTML = saying;
+			});
 		}
 	</script>
 </html>

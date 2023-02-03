@@ -65,13 +65,11 @@
 			set_background(background);
 		});
 
-		let lis = [];
 		for(let i = 1; i <= 6; i++) {
-			lis.push(7 - i);
 			load(i.toString()).then((data) => {
 				let dict = JSON.parse(data);
 				let saying = dict["saying"];
-				document.getElementById(lis.pop().toString()).innerHTML = saying;
+				document.getElementById(i.toString()).innerHTML = saying;
 			});
 		}
 	</script>
