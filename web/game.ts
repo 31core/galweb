@@ -1,12 +1,15 @@
 var code_list: Code[] = [];
-
+var speed: number;
 function game_init() {
+	get_config("text-speed").then((data) => {
+		speed = Number.parseInt(data);
+	});
 	fetch("/script/" + get_url_arg("scene")).then((res) => {
 		return res.text()
 	}).then((data) => {
-		data = data.replaceAll("\r\n", "\n");
-		data = data.replaceAll(/ +/g, " ");
-		data = data.replaceAll("\\n", "\n");
+		data = data.replaceAll("\r\n", "\n"); //CRLF -> LF
+		data = data.replaceAll(/\n+/g, "\n");
+		
 		let lines = data.split("\n");
 		for(let i = 0; i < lines.length; i++) {
 			code_list.push(new Code(lines[i]));
@@ -25,10 +28,6 @@ function game_init() {
 		on_click();
 	});
 }
-var speed: number;
-get_config("text-speed").then((data) => {
-	speed = Number.parseInt(data);
-});
 
 var music: HTMLAudioElement;
 var current_background: string = "";
@@ -47,12 +46,16 @@ class Code {
 	type: string;
 	args: string[];
 	constructor(code: string) {
+		code = code.replaceAll(/ +/g, " ");
+		code = code.replaceAll("\\n", "\n");
+		code = code.replaceAll("\\ ", "\0");
 		this.type = code.split(" ")[0];
 		this.args = code.split(" ").slice(1);
+		for(let i = 0; i < this.args.length; i++) {
+			this.args[i] = this.args[i].replaceAll("\0", " ");
+		}
 	}
 }
-
-
 
 /* Set dialog text */
 function dialog(character: string, saying: string) {

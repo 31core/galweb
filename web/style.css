@@ -14,9 +14,9 @@
 
 .dialog-text
 {
-	position: relative;
+	position: absolute;
 	left: 5%;
-	top: 20%;
+	top: 30%;
 	font-size: medium;
 }
 
@@ -24,9 +24,10 @@
 {
 	color:white;
 	-webkit-text-stroke:2px #66cbea;
-	position: relative;
+	position: absolute;
 	font-size: 150%;
-	left: 5%;
+	left: 2%;
+	top: 0%;
 }
 
 .button
