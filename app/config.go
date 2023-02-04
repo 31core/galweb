@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
+	"os"
 )
 
 var config map[string]string
@@ -18,7 +18,7 @@ func DefaultConfig() {
 }
 
 func LoadConfig() {
-	json_data, err := ioutil.ReadFile("config.json")
+	json_data, err := os.ReadFile("config.json")
 	if err != nil {
 		log.Fatalln("Could not read 'config.json'")
 	}

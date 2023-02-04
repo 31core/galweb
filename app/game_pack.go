@@ -6,24 +6,23 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 )
 
 type GamePack struct {
 	FileName string
 	Config   *map[string]string
-	f        *zip.ReadCloser
+	pack_fd  *zip.ReadCloser
 }
 
-func (self *GamePack) Open(file string) error {
+func (gp *GamePack) Open(file string) error {
 	var err error
-	self.f, err = zip.OpenReader(file)
+	gp.pack_fd, err = zip.OpenReader(file)
 	return err
 }
 
-func (self *GamePack) GetFile(path string) ([]byte, error) {
-	for _, f := range self.f.File {
+func (gp *GamePack) GetFile(path string) ([]byte, error) {
+	for _, f := range gp.pack_fd.File {
 		if f.Name == path {
 			rc, _ := f.Open()
 			data, _ := io.ReadAll(rc)
@@ -34,22 +33,22 @@ func (self *GamePack) GetFile(path string) ([]byte, error) {
 	return []byte{}, fmt.Errorf("no such file: %s", path)
 }
 
-func (self *GamePack) GetConfig(key string) (string, error) {
-	if self.Config == nil {
+func (gp *GamePack) GetConfig(key string) (string, error) {
+	if gp.Config == nil {
 		var config map[string]string
-		cfg, err := self.GetFile("package.json")
+		cfg, err := gp.GetFile("package.json")
 		if err != nil {
-			return "", fmt.Errorf("Couldn't read package.json\n")
+			return "", fmt.Errorf("couldn't read package.json")
 		}
 		json.Unmarshal(cfg, &config)
-		self.Config = &config
+		gp.Config = &config
 		return config[key], nil
 	}
-	return (*self.Config)[key], nil
+	return (*gp.Config)[key], nil
 }
 
-func (self *GamePack) Close() error {
-	return self.f.Close()
+func (gp *GamePack) Close() error {
+	return gp.pack_fd.Close()
 }
 
 func ListDir(path string) []string {
@@ -57,7 +56,7 @@ func ListDir(path string) []string {
 		path = path[2:]
 	}
 	var files []string
-	dir, err := ioutil.ReadDir(path)
+	dir, err := os.ReadDir(path)
 	if err != nil {
 		return nil
 	}
@@ -83,10 +82,10 @@ func BuildGamePack(src, out string) {
 	for _, file := range ListDir(".") {
 		fmt.Printf("Adding %s\n", file)
 		content, _ := z.Create(file)
-		dt, _ := ioutil.ReadFile(file)
+		dt, _ := os.ReadFile(file)
 		content.Write(dt)
 	}
 	z.Close()
 	os.Chdir(now_dir)
-	ioutil.WriteFile(out, data.Bytes(), os.ModePerm)
+	os.WriteFile(out, data.Bytes(), os.ModePerm)
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -20,7 +19,7 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, "Method Error")
 			return
 		}
-		err := ioutil.WriteFile("./saves/"+r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
+		err := os.WriteFile("./saves/"+r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
 		if err != nil {
 			fmt.Fprintf(w, "Failed while writing '%s'.", r.PostFormValue("name"))
 			log.Printf("Failed while writing '%s'.", r.PostFormValue("name"))
@@ -31,7 +30,7 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 	}
 	/* Load game data */
 	if command == "load" {
-		data, err := ioutil.ReadFile("./saves/" + r.URL.Query().Get("name"))
+		data, err := os.ReadFile("./saves/" + r.URL.Query().Get("name"))
 		if err != nil {
 			fmt.Fprintf(w, "Failed while reading '%s'.", r.URL.Query().Get("name"))
 			log.Printf("Failed while reading '%s'.", r.URL.Query().Get("name"))
@@ -69,13 +68,13 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Location", "/game?scene="+entry)
 		w.WriteHeader(302)
 	}
-	game_html, _ := ioutil.ReadFile(fmt.Sprintf("%s/game.html", config["resource_root"]))
+	game_html, _ := os.ReadFile(fmt.Sprintf("%s/game.html", config["resource_root"]))
 	fmt.Fprint(w, string(game_html))
 }
 
 func HttpResource(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.URL.Path, "/")
-	data, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", config["resource_root"], path[len(path)-1]))
+	data, err := os.ReadFile(fmt.Sprintf("%s/%s", config["resource_root"], path[len(path)-1]))
 
 	if err != nil {
 		log.Printf("No such file: resource/%s\n", path[len(path)-1])
@@ -165,7 +164,7 @@ build [source directory] [game_pack]`)
 		log.Printf("Server is running on %s:%s\n", config["host"], config["port"])
 
 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
+			data, _ := os.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
 			html := string(data)
 			fmt.Fprint(w, string(html))
 		})
@@ -175,11 +174,11 @@ build [source directory] [game_pack]`)
 		http.HandleFunc("/data/", HttpData)
 		http.HandleFunc("/script/", HttScript)
 		http.HandleFunc("/save", func(w http.ResponseWriter, r *http.Request) {
-			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/save.html", config["resource_root"]))
+			data, _ := os.ReadFile(fmt.Sprintf("%s/save.html", config["resource_root"]))
 			fmt.Fprint(w, string(data))
 		})
 		http.HandleFunc("/load", func(w http.ResponseWriter, r *http.Request) {
-			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/load.html", config["resource_root"]))
+			data, _ := os.ReadFile(fmt.Sprintf("%s/load.html", config["resource_root"]))
 			fmt.Fprint(w, string(data))
 		})
 		http.HandleFunc("/favicon.ico", HttpIcon)
