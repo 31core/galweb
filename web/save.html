@@ -7,16 +7,18 @@
 		JS(/resource/info.js)
 		JS(/resource/api.js)
 		JS(/resource/runtime.js)
+		JS(/resource/saves.js)
 		JS(/resource/game.js)
 	</head>
 	<script>
 		function on_save(num) {
-			dict = {
+			var save_data = new SaveData();
+			save_data.dict = {
 				"step": get_url_arg("step"),
 				"scene": get_url_arg("scene"),
 				"saying": get_url_arg("saying"),
 			};
-			save(num.toString(), JSON.stringify(dict));
+			save(num.toString(), save_data.to_string());
 		}
 		function return_to_game() {
 			location.assign("/game" + location.search)
@@ -67,9 +69,14 @@
 
 		for(let i = 1; i <= 6; i++) {
 			load(i.toString()).then((data) => {
-				let dict = JSON.parse(data);
-				let saying = dict["saying"];
-				document.getElementById(i.toString()).innerHTML = saying;
+				try {
+					console.log(data);
+					let save_data = new SaveData();
+					save_data.from(data);
+					let saying = save_data.get_saying();
+					document.getElementById(i.toString()).innerHTML = saying;
+				}
+				catch {}
 			});
 		}
 	</script>

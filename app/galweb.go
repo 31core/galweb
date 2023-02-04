@@ -92,21 +92,25 @@ func HttpResource(w http.ResponseWriter, r *http.Request) {
 }
 
 func HttpData(w http.ResponseWriter, r *http.Request) {
-	path := strings.Split(r.URL.Path, "/")
-	data, err := game.GetFile(fmt.Sprintf("data/%s", path[len(path)-1]))
+	path := ""
+	for _, str := range strings.Split(r.URL.Path, "/") {
+		path += fmt.Sprintf("%s/", str)
+	}
+	path = path[1 : len(path)-1]
+
+	data, err := game.GetFile(path)
 
 	if err != nil {
-		log.Printf("No such file: data/%s\n", path[len(path)-1])
+		log.Printf("No such file: %s\n", path)
 		w.WriteHeader(404)
 		return
 	}
 
-	content_type := DetectContentTypeByType(path[len(path)-1])
+	content_type := DetectContentTypeByType(path)
 	if content_type == "application/octect-stream" {
 		content_type = http.DetectContentType(data)
 	}
 	w.Header().Set("Content-Type", content_type)
-
 	fmt.Fprint(w, string(data))
 }
 
@@ -160,7 +164,7 @@ build [source directory] [game_pack]`)
 
 		log.Printf("Server is running on %s:%s\n", config["host"], config["port"])
 
-		http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))
 			html := string(data)
 			fmt.Fprint(w, string(html))
@@ -170,11 +174,11 @@ build [source directory] [game_pack]`)
 		http.HandleFunc("/resource/", HttpResource)
 		http.HandleFunc("/data/", HttpData)
 		http.HandleFunc("/script/", HttScript)
-		http.HandleFunc("/save", func (w http.ResponseWriter, r *http.Request) {
+		http.HandleFunc("/save", func(w http.ResponseWriter, r *http.Request) {
 			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/save.html", config["resource_root"]))
 			fmt.Fprint(w, string(data))
 		})
-		http.HandleFunc("/load", func (w http.ResponseWriter, r *http.Request) {
+		http.HandleFunc("/load", func(w http.ResponseWriter, r *http.Request) {
 			data, _ := ioutil.ReadFile(fmt.Sprintf("%s/load.html", config["resource_root"]))
 			fmt.Fprint(w, string(data))
 		})

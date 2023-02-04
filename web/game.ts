@@ -1,28 +1,30 @@
 var code_list: Code[] = [];
-fetch("/script/" + get_url_arg("scene")).then((res) => {
-	return res.text()
-}).then((data) => {
-	data = data.replaceAll("\r\n", "\n");
-	data = data.replaceAll(/ +/g, " ");
-	data = data.replaceAll("\\n", "\n");
-	let lines = data.split("\n");
-	for(let i = 0; i < lines.length; i++) {
-		code_list.push(new Code(lines[i]));
-	}
-	/* restore */
-	if(get_url_arg("step") != "") {
-		step = Number.parseInt(get_url_arg("step"));
-	}
-	fastward();
-	if(current_background != "") {
-		set_background(current_background);
-	}
-	if(current_music != "") {
-		play_sound(current_music);
-	}
-	on_click();
-});
 
+function game_init() {
+	fetch("/script/" + get_url_arg("scene")).then((res) => {
+		return res.text()
+	}).then((data) => {
+		data = data.replaceAll("\r\n", "\n");
+		data = data.replaceAll(/ +/g, " ");
+		data = data.replaceAll("\\n", "\n");
+		let lines = data.split("\n");
+		for(let i = 0; i < lines.length; i++) {
+			code_list.push(new Code(lines[i]));
+		}
+		/* restore */
+		if(get_url_arg("step") != "") {
+			step = Number.parseInt(get_url_arg("step"));
+		}
+		fastward();
+		if(current_background != "") {
+			set_background(current_background);
+		}
+		if(current_music != "") {
+			play_sound(current_music);
+		}
+		on_click();
+	});
+}
 var speed: number;
 get_config("text-speed").then((data) => {
 	speed = Number.parseInt(data);

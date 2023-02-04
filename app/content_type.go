@@ -5,13 +5,14 @@ import (
 )
 
 func DetectContentTypeByType(filename string) string {
-	if strings.Split(filename, ".")[1] == "html" {
+	ectend := strings.Split(filename, ".")[1]
+	if ectend == "html" {
 		return "text/html; charset=utf-8"
 	}
-	if strings.Split(filename, ".")[1] == "css" {
+	if ectend == "css" {
 		return "text/css; charset=utf-8"
 	}
-	if strings.Split(filename, ".")[1] == "js" {
+	if ectend == "js" {
 		return "text/javascript; charset=utf-8"
 	}
 	return "application/octect-stream"

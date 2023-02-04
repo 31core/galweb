@@ -34,6 +34,7 @@
 			get_config("title").then((title) => {
 				set_title(title);
 			});
+			game_init();
 
 			function to_save_page() {
 				location.assign("/save?" + encode_url_arg({"step": (step - 1).toString(),
