@@ -19,6 +19,7 @@
 				"saying": get_url_arg("saying"),
 			};
 			save(num.toString(), save_data.to_string());
+			document.getElementById(num.toString()).innerHTML = get_url_arg("saying");
 		}
 		function return_to_game() {
 			location.assign("/game" + location.search)

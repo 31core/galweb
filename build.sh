@@ -9,10 +9,12 @@ for i in *.html
 do
     m4 ../html.m4 $i > ../resource/$i
 done
-cp *.ts ../resource
 cp *.css ../resource
-cp tsconfig.json ../resource
 popd
 
 echo 'building TypeScript'
-tsc -p resource
+tsc -p web
+for i in web/*.js
+do
+    mv $i resource/`basename $i`
+done

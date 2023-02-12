@@ -5,7 +5,7 @@ function on_click() {
 		return;
 	}
 	/* 如果文字还没显示完全则显全 */
-	if(timers.length != 0) {
+	if(timers.length > 0) {
 		let saying = code_list[step - 1].args[0];
 		let character: string;
 		if(code_list[step - 1].args.length == 1) {
@@ -14,11 +14,11 @@ function on_click() {
 		else if(code_list[step - 1].args.length == 2) {
 			character = code_list[step - 1].args[1];
 		}
-		dialog(character, saying);
-		/* 取消之前的计时器 */
+		/* cancel active timers */
 		for(let i = 0; i < timers.length; i++) {
 			clearTimeout(timers[i]);
 		}
+		set_dialog(character, saying);
 		timers = [];
 		return;
 	}

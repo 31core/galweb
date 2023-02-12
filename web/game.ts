@@ -65,8 +65,7 @@ function dialog(character: string, saying: string) {
 		timers.push(setTimeout(() => {
 			timers = timers.slice(1);
 			saying = saying.replaceAll("\n", "<br>");
-			document.getElementById("character").innerHTML = character;
-			document.getElementById("dialog-text").innerHTML = saying.slice(0, len + 1);
+			set_dialog(character, saying.slice(0, len + 1));
 			len++;
 		}, speed * i));
 	}
@@ -92,14 +91,16 @@ function execute(code: Code) {
 	/* change background image */
 	else if(code.type == "background") {
 		let background = document.getElementById("background");
+		/* set disappearing animation */
 		background.setAttribute("style", "animation: background_disappearing 0.5s;");
 		background.addEventListener("animationend", () => {
 			set_background(code.args[0]);
+			/* set appearing animation */
 			background.setAttribute("style", "animation: background_appearing 0.5s;");
 		});
 	}
 	else if(code.type == "play-sound") {
-		play_sound(code.args[0])
+		play_sound(code.args[0]);
 	}
 	else if(code.type == "stop-sound") {
 		stop_sound();
@@ -132,21 +133,24 @@ function execute(code: Code) {
 	}
 	else if(code.type == "choice") {
 		events_disabled = true;
-		let choice: HTMLAnchorElement[];
+		let choice: HTMLButtonElement[] = [];
+		document.getElementById("dialog").setAttribute("hidden", "");
 		document.getElementById("branch").removeAttribute("hidden");
 		for(let i = 0; i < code.args.length; i++) {
-			choice.push(document.createElement("a"));
-			choice[i - 1].innerHTML = code.args[i].split(":")[0];
+			choice.push(document.createElement("button"));
+			choice[i].innerHTML = code.args[i].split(":")[0];
 
-			choice[i - 1].setAttribute("class", "button");
-			choice[i - 1].setAttribute("href", "/game?scene=" + code.args[i].split(":")[1]);
-			choice[i - 1].setAttribute("style", `text-decoration:none;
+			choice[i].addEventListener("click", () => {
+				location.assign("/game?scene=" + code.args[i].split(":")[1]);
+			});
+			choice[i].setAttribute("class", "button");
+			choice[i].setAttribute("style", `text-decoration:none;
 				position:absolute;
 				left: 5%;
-				top: ` + (20 * i).toString() + `%;
+				top: ` + (20 * (i + 1)).toString() + `%;
 				width: 85%`);
 
-			document.getElementById("branch").appendChild(choice[i - 1]);
+			document.getElementById("branch").appendChild(choice[i]);
 		}
 	}
 }
@@ -169,6 +173,11 @@ function set_title(title: string) {
 function set_background(filename: string) {
 	current_background = filename;
 	document.getElementById("background").setAttribute("src", "/data/" + filename);
+}
+
+function set_dialog(character: string, saying: string) {
+	document.getElementById("character").innerHTML = character;
+	document.getElementById("dialog-text").innerHTML = saying;
 }
 
 function play_sound(filename: string) {
