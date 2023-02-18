@@ -8,6 +8,7 @@
 		JS(/resource/api.js)
 		JS(/resource/events.js)
 		JS(/resource/game.js)
+		JS(/resource/saves.js)
 	</head>
 	<body onkeydown="on_keydown(event);">
 		<img onclick="on_click();" id="background" height="100%" width="100%">
@@ -29,6 +30,8 @@
 				<button class="button" onclick="location.assign('/');">Home</button>
 				<button class="button" onclick="to_save_page();">Save</button>
 				<button class="button" onclick="to_load_page();">Load</button>
+				<button class="button" onclick="qsave();">QSave</button>
+				<button class="button" onclick="qload();">QLoad</button>
 			</p>
 		</div>
 		<script>
@@ -46,6 +49,22 @@
 				location.assign("/load?" + encode_url_arg({"step": (step - 1).toString(),
 					"scene": get_url_arg("scene"),
 					"origin": location.pathname}));
+			}
+			function qsave() {
+				let save_data = new SaveData();
+				save_data.dict = {
+					"step": (step - 1).toString(),
+					"scene": get_url_arg("scene"),
+					"saying": dialog_info["saying"],
+				};
+				save("qsave", save_data.to_string());
+			}
+			function qload() {
+				load("qsave").then((data) => {
+					let save_data = new SaveData();
+					save_data.from(data);
+					location.assign("/game?" + save_data.to_url());
+				});
 			}
 		</script>
 	</body>

@@ -71,7 +71,6 @@
 		for(let i = 1; i <= 6; i++) {
 			load(i.toString()).then((data) => {
 				try {
-					console.log(data);
 					let save_data = new SaveData();
 					save_data.from(data);
 					let saying = save_data.get_saying();

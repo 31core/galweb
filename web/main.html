@@ -7,6 +7,7 @@
 		JS(/resource/api.js)
 		JS(/resource/game.js)
 		JS(/resource/runtime.js)
+		JS(/resource/saves.js)
 	</head>
 	<style>
 		#container
@@ -29,8 +30,11 @@
 	</style>
 	<script>
 		function Continue() {
-			var dict = JSON.parse(load("autosave"));
-			location.assign("/game?" + encode_url_arg(dict));
+			load("autosave").then((data) => {
+				let save_data = new SaveData();
+				save_data.from(data);
+				location.assign("/game?" + save_data.to_url());
+			});
 		}
 		function Start() {
 			location.assign("/game");
