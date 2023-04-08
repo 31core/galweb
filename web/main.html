@@ -64,11 +64,8 @@
 			set_background(background);
 		});
 
-		var music_url = get_config("background-music");
-		if(music_url != "") {
-			music = new Audio("data/" + music_url);
-			music.loop = true;
-			music.play();
-		}
+		get_config("background-music").then((music_url) => {
+			play_sound(music_url);
+		});
 	</script>
 </html>

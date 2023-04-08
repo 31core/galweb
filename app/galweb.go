@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -21,8 +20,8 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 		}
 		err := os.WriteFile("./saves/"+r.PostFormValue("name"), []byte(r.PostFormValue("data")), os.ModePerm)
 		if err != nil {
-			fmt.Fprintf(w, "Failed while writing '%s'.", r.PostFormValue("name"))
-			log.Printf("Failed while writing '%s'.", r.PostFormValue("name"))
+			fmt.Fprintf(w, "Failed while writing save/%s", r.PostFormValue("name"))
+			WARN("Failed while writing save/%s", r.PostFormValue("name"))
 		} else {
 			fmt.Fprint(w, "OK")
 		}
@@ -32,8 +31,8 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 	if command == "load" {
 		data, err := os.ReadFile("./saves/" + r.URL.Query().Get("name"))
 		if err != nil {
-			fmt.Fprintf(w, "Failed while reading '%s'.", r.URL.Query().Get("name"))
-			log.Printf("Failed while reading '%s'.", r.URL.Query().Get("name"))
+			fmt.Fprintf(w, "Failed while eeading save/%s", r.URL.Query().Get("name"))
+			WARN("Failed while eeading save/%s", r.URL.Query().Get("name"))
 		} else {
 			fmt.Fprint(w, string(data))
 		}
@@ -42,8 +41,7 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 	if command == "get_config" {
 		conf, err := game.GetConfig(r.URL.Query().Get("key"))
 		if err != nil {
-			log.Printf("\"%s\" is not defiened in package.json\n", r.URL.Query().Get("key"))
-			fmt.Printf("\"%s\" is not defiened in package.json", r.URL.Query().Get("key"))
+			ERR("\"%s\" is not defiened in package.json", r.URL.Query().Get("key"))
 			w.WriteHeader(500)
 			return
 		}
@@ -51,7 +49,7 @@ func HttpAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "ERROR: unkown api '%s'", command)
-	log.Printf("ERROR: unkown api '%s'", command)
+	ERR("unkown api '%s'", command)
 }
 
 func HttpGame(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +58,7 @@ func HttpGame(w http.ResponseWriter, r *http.Request) {
 	if scene == "" {
 		entry, err := game.GetConfig("entry")
 		if err != nil {
-			log.Panicln("\"entry\" is not defiened in package.json")
+			ERR("\"entry\" is not defiened in package.json")
 			fmt.Fprintln(w, "\"entry\" is not defiened in package.json")
 			w.WriteHeader(500)
 			return
@@ -77,7 +75,7 @@ func HttpResource(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile(fmt.Sprintf("%s/%s", config["resource_root"], path[len(path)-1]))
 
 	if err != nil {
-		log.Printf("No such file: resource/%s\n", path[len(path)-1])
+		WARN("No such file: resource/%s", path[len(path)-1])
 		w.WriteHeader(404)
 		return
 	}
@@ -100,7 +98,7 @@ func HttpData(w http.ResponseWriter, r *http.Request) {
 	data, err := game.GetFile(path)
 
 	if err != nil {
-		log.Printf("No such file: %s\n", path)
+		WARN("No such file: %s", path)
 		w.WriteHeader(404)
 		return
 	}
@@ -118,7 +116,7 @@ func HttScript(w http.ResponseWriter, r *http.Request) {
 	data, err := game.GetFile(fmt.Sprintf("scripts/%s.gws", path[len(path)-1]))
 
 	if err != nil {
-		log.Printf("No such file: scripts/%s.gws\n", path[len(path)-1])
+		ERR("No such file: scripts/%s.gws", path[len(path)-1])
 		w.WriteHeader(404)
 		return
 	}
@@ -129,14 +127,14 @@ func HttScript(w http.ResponseWriter, r *http.Request) {
 func HttpIcon(w http.ResponseWriter, r *http.Request) {
 	icon, err := game.GetConfig("icon")
 	if err != nil {
-		fmt.Fprint(w, "\"icon\" is not defined in package.json")
-		log.Println("\"icon\" is not defined in package.json")
+		fmt.Fprint(w, "'icon' is not defined in package.json")
+		WARN("'icon' is not defined in package.json")
 		w.WriteHeader(500)
 		return
 	}
 	data, err := game.GetFile("data/" + icon)
 	if err != nil {
-		log.Printf("No such icon: %s\n", icon)
+		ERR("No such icon: %s\n", icon)
 		w.WriteHeader(404)
 		return
 	}
@@ -161,7 +159,7 @@ build [source directory] [game_pack]`)
 			os.Mkdir("./saves", os.ModePerm)
 		}
 
-		log.Printf("Server is running on %s:%s\n", config["host"], config["port"])
+		INFO("Server is running on %s:%s", config["host"], config["port"])
 
 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			data, _ := os.ReadFile(fmt.Sprintf("%s/main.html", config["resource_root"]))

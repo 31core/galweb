@@ -18,9 +18,9 @@
     "text-speed": ""
 }
 ```
-|Entry           |Description                |
-|----------------|---------------------------|
-|entry           |Where the first script is. |
-|background      |Main menu background image.|
-|background-music|BGM played in the min menu.|
-|text-speed      |Text speed                 |
+|Entry           |Description                 |
+|----------------|----------------------------|
+|entry           |Where the first script is.  |
+|background      |Main menu background image. |
+|background-music|BGM played in the main menu.|
+|text-speed      |Text speed                  |
